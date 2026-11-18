@@ -42,6 +42,35 @@ Mã commit, mã lần chạy (`runs/<mã>`), dòng trong phiếu.
 
 Một điều học được, một điều còn chưa chắc.
 
+## ThanDucTrung-2A202603449
+
+### Phần việc phụ trách
+
+Trưởng nhóm; vai **Vận hành và pháp lý (TV4)**. Câu 1.2, 1.4 (Phiếu A mục A1, A2 cột Telemetry); câu 2.4 (Phiếu B mục B4 HAZOP vòng 1, B5 checklist 9 nhóm); chủ trì câu 2.5 (B6 pre-mortem, chốt cổng vòng 1); câu 2.10 (`config/operating_gates.json` mục `operations` và `legal`, Phiếu B mục B7.5 runbook phần 1–3, B7.6 giờ cao điểm). Vòng 2: câu 3.0 (C1), C3, C4, câu 3.3, câu 3.5 phần người/pháp lý, câu 3.7 (C10, C11) và `submission/submission.json`.
+
+### Đóng góp cụ thể
+
+- **Câu 1.2:** viết mục tiêu của chị Oanh (mỗi dòng trợ lý ghi sổ tự đối chiếu được với tracking và chính sách) và của chị Hạnh (ca chuyển sang tới tay trong 60 phút, có đủ căn cứ, trong sức 6 ca/giờ), dựa PRD v1.1 §2, §6 của Lab 9.
+- **Câu 1.4:** thiết kế telemetry đếm lỗi hãng không khớp tracking và thông báo gửi hãng có dữ liệu cá nhân người nhận, cửa sổ 24 giờ, ngưỡng đỏ ≥ 1, ngưỡng vàng theo `ops_limits` (2 lỗi/hãng/ngày) và ngưỡng treo hãng GHSH/DNB.
+- **B4 HAZOP** trên `file_carrier_fault`: 6 dòng kỹ thuật (2 nhánh chưa thấy trên trace: nguyên nhân trễ trống bị coi là CARRIER, đơn nhiều kiện gán lỗi cho kiện đầu) và 4 dòng ngoài kỹ thuật (người duyệt, ngân sách, dữ liệu gửi bên thứ ba, phạm vi HCM-B2B).
+- **B5 checklist** 9 nhóm, mỗi dòng một PIC có tên.
+- **B6 pre-mortem:** chốt ba rủi ro thành cổng vòng 1 (R1 hoàn theo số ngày khách tự khai, R2 lỗi hãng oan, R3 ghi lặp/phê duyệt sai), các rủi ro còn lại gắn với cổng config hoặc risk register; điền sẵn ba cột đầu B7.1 cho Kỹ sư cổng. Baseline sau đó xác nhận R1 (`T-002@55`).
+- **Config `operations`/`legal`:** `pic = NV-TUNG`, `approver_id = NV-HANH`, 1 người trực, 6 ca/giờ, chờ tối đa 60 phút, 6 điều kiện dừng, kênh `#logix-refund-pilot-alert`; chặn `recipient_contact` và `customer_note` gửi hãng; `carrier_fault_requires_recorded_cause = true`.
+- **Runbook 1–3 và Giờ cao điểm:** 4 vai có mã nhân viên, 7 tín hiệu có ngưỡng vàng/đỏ khớp tiêu chí đã ký (`queue_stuck_max = 0`, `cost_per_ticket_vnd_max = 6000`), cách dừng bằng `config/switches.json`, thời hạn dừng 15 phút, điều kiện bật lại.
+- Gộp xung đột Phiếu A giữa cột 1.3 (TV1) và cột 1.4 (TV4), giữ nguyên nội dung hai bên.
+
+### Bằng chứng
+
+- Commit: `80d1f41` (config `operations`/`legal`, Phiếu A 1.2, 1.4, Phiếu B B4, B5, B7.5, B7.6) · `726eca5` (B6 pre-mortem, chốt R1–R3) · `30d15e2` (B7.1 cột 1–3).
+- Mã lần chạy baseline đối chiếu cho B6/R1: `R-base-before-20261118-154917-611de4` (`T-002@55` hoàn sai 20.000đ, 1 lỗi hãng oan VNX); bằng chứng tại `docs/evidence/R-base-before-20261118-154917-611de4/`.
+- Dòng trong phiếu: Phiếu A mục A1 câu 1.2, A2 cột Telemetry; Phiếu B mục B4, B5, B6, B7.5, B7.6.
+- **Dùng AI:** dùng Claude Code để đọc `data/world.json`, `lab10/agent.py`, `ops.py`, `tools.py`, soạn nháp các phần trên và kiểm config bằng `lab10.ops.problems` + public tests (`Ran 13 tests … OK`). Mọi con số và tên người do tôi chọn và giải thích được lúc demo; không dùng AI để viết code xử lý theo mã ticket.
+
+### Exit ticket
+
+- Một điều học được: [tự điền]
+- Một điều còn chưa chắc: [tự điền]
+
 ## LuuVanVietDuc-2A202603445
 
 ### Phần việc phụ trách
