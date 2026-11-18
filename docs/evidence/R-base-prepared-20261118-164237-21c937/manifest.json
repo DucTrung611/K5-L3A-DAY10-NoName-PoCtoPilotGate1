@@ -1,0 +1,21 @@
+{
+  "measured_commit": "06c4f6f158845c61f5dc0483d5257cc5a2177b8b",
+  "run_id": "R-base-prepared-20261118-164237-21c937",
+  "round1": {
+    "ok": true,
+    "taken": true,
+    "hash": "6640aec48afba7939f8bb13832cc80ef78f11e0fc897150c2b8972e6d487724c",
+    "problem": null,
+    "taken_at": "2026-11-18T16:42:37"
+  },
+  "gate_exit": 0,
+  "files": {
+    "checkpoint-output.txt": "14cc4c116a3a66e43eca5501f05887c57b33bc5ee1f12a68bd1e134ad7a884b5",
+    "eval-output.txt": "9d6422b069ad7c5c3fa35922b5d4997ad2922a4c6c4b48dcf0af240313027727",
+    "gate-output.txt": "2a19dfe2be317617e49a4bf67bc4fac1fd3b0ad3246695090c6fdf2cadb2536b",
+    "journal.jsonl": "05940b5f38bf6ec392ee2a24ef6f6e9c3e7c15876203bfc25fb4c8d116c520ef",
+    "report.json": "d0ddb28659233793c22e59fe06e13f4395757032f4a2044802e5975f88ecf4b1",
+    "round1.lock": "4ba8290610e23f1173342c0412a187a316c7adc6e2cd4c1b965b16bd2f66daa2",
+    "T-002@55.json": "996bb8cb97122f522610facccd5789f5933923a404ed79403440da1058cab333"
+  }
+}

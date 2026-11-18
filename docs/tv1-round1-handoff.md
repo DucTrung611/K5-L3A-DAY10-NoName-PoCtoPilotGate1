@@ -35,3 +35,10 @@ Code/config thử khớp 47f1bcf, HEAD lúc thử 799335e, seed 11. [Manifest v�
 Tính chất: khai tăng độ trễ không làm tăng khoản hoàn vượt quyền lợi nguồn sự thật, đồng thời giữ phục vụ ca đủ điều kiện. Đây là ca adhoc không nhãn, đã kiểm oracle độc lập; mỗi lệnh world riêng. Chưa kiểm đầy đủ R3, outage hay S5.
 
 TV1 đã xác nhận giữ R1–R3 vòng 1. Chờ TV3/TV4 xác nhận config; nhóm chốt B8 và cho checkpoint một lần. Hiện chưa có round1.lock hay gói incidents/S5 ở máy này. Chỉ sau khi giữ bản vòng 1 và nhận đúng S5 mới chạy grade/đo prepared, dò các lỗi khác loại và gửi TV1; không sửa vòng 2 trước đó.
+
+
+## Checkpoint vòng 1 đã tạo trước nhận thẻ
+
+- Hash `6640aec4`, taken_at `2026-11-18T16:42:37` (giờ máy). Giữ nguyên guards_round1.py, operating_gates.round1.json, round1.lock.
+- Base/prepared: `R-base-prepared-20261118-164237-21c937`, 110/110 đạt; mọi ngưỡng ký đạt, không regression; [report](evidence/R-base-prepared-20261118-164237-21c937/report.json).
+- Đã bổ sung bằng chứng B8; quyết định v1/PIC vẫn chờ nhóm xác nhận, không tự gán. Người dùng xác nhận Coach đã phát thẻ; sẽ nhận đúng S5 sau khi push bản chốt.

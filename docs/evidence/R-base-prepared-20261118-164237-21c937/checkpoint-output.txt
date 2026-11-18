@@ -1,0 +1,3 @@
+ĐÃ CHỐT cổng vòng 1 (mốc prepared). 8 ký tự đầu: 6640aec4
+  Đã chép: lab10/guards_round1.py · config/operating_gates.round1.json  (không sửa hai file này)
+  Vòng 2 sửa tiếp ở: lab10/guards.py · config/operating_gates.json

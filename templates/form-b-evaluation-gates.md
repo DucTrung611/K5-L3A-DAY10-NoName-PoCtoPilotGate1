@@ -31,7 +31,7 @@ Mọi con số trong quyết định Gate 1 phải trỏ về một dòng ở đ
 |---|---|---|---|---|---|---|---|---|
 | 1 | `R-base-before-20261118-154917-611de4` | base · base | Baseline sau commit ký `806ad8c`; stage base bỏ qua cổng/config nhóm | 0,9909 [0,9727; 1,0] | 0,9545 | 20.000 · 1 · 0 | 0,2273 | 109/110 đạt, còn lỗi T-002@55; chưa đủ tiêu chí an toàn |
 | 2 | `R-base-after-20261118-162239-21c937` | base · after | Tích hợp R1–R3 và config tại commit `47f1bcf`; đo cả bản tích hợp, không tách tác động từng thay đổi | 1,0 [1,0; 1,0] | 1,0 | 0 · 0 · 0 | 0,2273 | 110/110 đạt; không ca mới hỏng, coverage 100%; chưa checkpoint |
-| 3 | | base · prepared | (cổng vòng 1 đã chốt) | | | | | |
+| 3 | `R-base-prepared-20261118-164237-21c937` | base · prepared | Chốt bản code/config đã xác nhận; không thêm cổng | 1,0 [1,0; 1,0] | 1,0 | 0 · 0 · 0 | 0,2273 | 110/110 đạt, không regression; hash chốt 6640aec4 |
 | 4 | | | | | | | | |
 
 ---
@@ -408,20 +408,20 @@ bao nhiêu thời gian? (3) Có phần nào của dự án không nên làm ti�
 
 | | **v1** (phút 105–115, TRƯỚC khi nhận thẻ sự cố) |
 |---|---|
-| Commit ký tiêu chí (message `Sign acceptance criteria`; hash commit, tuỳ chọn) | |
-| Hash chốt cổng vòng 1 (8 ký tự lệnh `lab10.checkpoint` in ra, tuỳ chọn) | |
-| Mã lần chạy dùng làm bằng chứng | bộ nền, mốc base: ________ · bộ nền với cổng vòng 1 (prepared): ________ |
-| Còn dòng "vượt trần" nào trong report? (hàng chờ, chi phí, ROI, trần tiền, pháp lý) | |
+| Commit ký tiêu chí (message `Sign acceptance criteria`; hash commit, tuỳ chọn) | `806ad8c` |
+| Hash chốt cổng vòng 1 (8 ký tự lệnh `lab10.checkpoint` in ra, tuỳ chọn) | `6640aec4` (đã verify) |
+| Mã lần chạy dùng làm bằng chứng | base: `R-base-before-20261118-154917-611de4` · prepared: `R-base-prepared-20261118-164237-21c937` |
+| Còn dòng "vượt trần" nào trong report? (hàng chờ, chi phí, ROI, trần tiền, pháp lý) | Không trên bộ nền prepared; mọi ngưỡng đã ký đạt. Chưa có kết quả gói sự cố ở thời điểm chốt này |
 | Kho hoặc hãng có số xấu nhất: ____. Nếu chỉ nhìn phân khúc này, quyết định có đổi không? *(Đọc khối "theo kho và hãng" ở cuối output `lab10.eval` / `lab10.grade`, hoặc mục `by_segment` trong `report.json`.)* | |
-| Quyết định (khoanh một) | Tiếp tục · Thu hẹp · Cải tiến thêm · Dừng |
-| Bằng chứng 1: mã lần chạy + chỉ số bắt buộc nào đạt / chưa | |
-| Bằng chứng 2 | |
-| Bằng chứng 3 | |
+| Quyết định (khoanh một) | Chờ TV3/cả nhóm xác nhận quyết định v1; TV2 chỉ bàn giao bằng chứng |
+| Bằng chứng 1: mã lần chạy + chỉ số bắt buộc nào đạt / chưa | `R-base-prepared-20261118-164237-21c937`: pass_rate/pass_k = 1,0; CI95 [1,0;1,0]; 110/110 đạt |
+| Bằng chứng 2 | Cùng report prepared: hoàn sai 0đ; lỗi hãng oan 0; PII 0; không ca mới hỏng so baseline |
+| Bằng chứng 3 | Cùng report prepared: chi phí 4.202đ/ticket, ROI 1,38; ca ùn 0, coverage 100%, chuyển người 0,2273 |
 | Khớp dòng nào trong `decision_rule` đã ký? | |
 | Nếu Thu hẹp: cắt phần nào, vì sao | |
 | Nếu Cải tiến thêm: giả thuyết cụ thể + hạn | |
 | Nếu Dừng: bài học ghi lại | |
-| Một bằng chứng còn thiếu (thứ bộ nền chưa đo được) | |
+| Một bằng chứng còn thiếu (thứ bộ nền chưa đo được) | Thẻ sự cố S5, test ẩn, tracking sai và tải production thật; chưa thể suy từ 110 lượt mock sang toàn bộ pilot |
 | Ngày quyết định lại (trừ khi Dừng) | |
 | PIC ký | |
 
