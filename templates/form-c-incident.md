@@ -47,19 +47,25 @@ Chạy **trước khi sửa bất cứ thứ gì**:
 python3 -m lab10.grade --incident Sx
 ```
 
-- Mã lần chạy grade: `__________` · base: `__________` · prepared: `__________`
-- Cổng vòng 1 đỡ được ô / con số nào (so cột base với cột prepared): …
-- Khối kinh doanh và vận hành còn dòng nào vượt trần: …
+- Mã lần chạy grade: `__________` · base: `__________` · prepared: `__________` *(vai Kỹ sư cổng: đánh giá điền sau khi chạy `lab10.grade --incident S5` trên máy chính, chép cả vào C0 dòng 1)*
+- Cổng vòng 1 đỡ được ô / con số nào (so cột base với cột prepared): đọc trace từng ticket ở hai mốc (seed 11), cổng vòng 1 đỡ được **ba trong ba triệu chứng** của CFO, nhưng mỗi cái theo một cách:
+  - *Hoàn hai, ba lần* (triệu chứng 3): base `S5-02@11` ghi thêm 25.000đ cho O-2501 (lần 2, nhãn `denied`) → prepared cổng R3 (`write_gate` đọc sổ cái) chặn, sổ cái rỗng, `S5-02`, `S5-03` đạt. **Đỡ được hoàn trùng.**
+  - *Kho sỉ đọc xong lại chuyển người* (triệu chứng 1): base `S5-51@11` tốn 565đ tiền máy rồi `escalated` ("vượt hạn mức tự động") → prepared ticket nằm **ngoài phạm vi** (`business.pilot_scope` bỏ HCM-B2B), trợ lý không đọc, không tốn tiền máy. **Đỡ được bằng cách cắt phân khúc**, 12/30 ticket của gói về làm tay.
+  - *Ticket tốn LLM gấp nhiều lần* (triệu chứng 2): base `S5-70@11` tốn 2.018đ (> trần 1.500đ) → prepared `business_gate cost_budget_per_ticket_vnd` (1.200đ) chặn trước khi đọc, `escalated` với 200đ. **Đỡ được tiền máy nhưng đẩy ca hợp lệ sang người** (thêm 10.000đ công duyệt, nhãn chấp nhận chuyển người).
+  - **Bỏ sót / làm hỏng:** `S5-21@11` base hoàn 22.000đ trong khi CSKH đã hoàn tay 10.000đ (hoàn sai 10.000đ); prepared R3 chặn **cả** khoản → khách bị hoàn thiếu 12.000đ (vẫn HỎNG, kiểu khác). Câu trả lời khách ở `S5-02`, `S5-03` prepared ghi "LogiX chưa hoàn khoản nào cho đơn này" trong khi `S5-01` đã hoàn 25.000đ: sai sự thật, khách sẽ nhắn tiếp.
+- Khối kinh doanh và vận hành còn dòng nào vượt trần: *(điền từ report grade S5 ở mốc prepared; chú ý dòng "ticket tốn LLM nhiều nhất … trần 1500đ", "chi phí mỗi ticket", "kho … > làm tay")*
 
 **Mở lại pre-mortem (Phiếu B mục B6), viết bằng bút khác màu.** Với thẻ S1, S3, S4, S5 đây là một phần của phần riêng theo thẻ.
 
-- Sự cố trên thẻ thuộc lăng kính nào (kỹ thuật, kinh doanh, con người và vận hành, pháp lý)? …
-- Có nằm trong các lý do bàn đã viết không? Nếu có: cổng vòng 1 đã đỡ được bao nhiêu (đọc cột prepared trong report)? Nếu không: vì sao cả bàn không nghĩ tới? …
+- Sự cố trên thẻ thuộc lăng kính nào (kỹ thuật, kinh doanh, con người và vận hành, pháp lý)? <span style="color:#1f6feb">**Kinh doanh** là chính (lời hay lỗ, lỗ ở đâu); nhánh hoàn trùng nằm giữa **kỹ thuật** (đọc sổ cái) và **con người và vận hành** (CSKH vẫn hoàn tay song song).</span>
+- Có nằm trong các lý do bàn đã viết không? Nếu có: cổng vòng 1 đã đỡ được bao nhiêu (đọc cột prepared trong report)? Nếu không: vì sao cả bàn không nghĩ tới? <span style="color:#1f6feb">**Có hai phần ba.** B6 đã có: ★R3 "khoản hoàn bị ghi hai lần" (thành cổng R3, đỡ được `S5-02`), dòng Kinh doanh "chi phí mỗi ticket vượt làm tay vì chuyển người quá nhiều", và B4 dòng "Phạm vi pilot (kho HCM-B2B)" (thành `pilot_scope`). **Không có:** (a) tiền LLM tăng theo **độ dài chữ khách gõ**: bàn chỉ nghĩ chi phí đến từ công người, không nghĩ một ticket có thể tự đắt; (b) **hai nơi cùng ghi sổ** (CSKH tay + trợ lý): cổng R3 được viết như thể chỉ trợ lý ghi, nên chặn cứng cả đơn và làm khách bị hoàn thiếu. Lý do bàn không nghĩ tới: bộ nền không có ticket dài, không có dòng sổ cái ghi tay cho đơn đang mở (chỉ `T-OLD-1017` đã đóng).</span>
 - Lý do còn thiếu, thêm bây giờ:
 
 | Lý do thất bại (viết ở thì quá khứ) | Lăng kính | Kiểm được bằng gì (trace / data / config nào) |
 |---|---|---|
-| | | |
+| <span style="color:#1f6feb">Khách dán cả danh sách hàng 5.000–7.400 ký tự vào ticket; tiền đọc vượt trần 1.500đ, Finance từ chối ký chi phí</span> | Kinh doanh | `S5-70@11` base `cost_vnd` 2.018đ; 9/30 ticket gói S5 dài > 5.000 ký tự; report "ticket tốn LLM nhiều nhất"; `ops_facts.llm_cost` |
+| <span style="color:#1f6feb">CSKH vẫn hoàn tay song song; trợ lý (hoặc cổng của nó) không trừ khoản tay nên hoàn trùng, rồi sau khi vá thì hoàn thiếu</span> | Con người và vận hành | `incidents/S5/world_patch.json` → `ledger_seed` dòng `basis: manual` (`T-CSKH-2520`, `T-CSKH-2521`); `S5-21@11` base và prepared; report `wrongful_refund_vnd`, `under_refund_vnd` |
+| <span style="color:#1f6feb">Khách nhận câu "chưa hoàn khoản nào" dù đã được hoàn, nhắn lại nhiều lần, mỗi lần tốn thêm tiền máy</span> | Con người và vận hành | `S5-02@11`, `S5-03@11` prepared dòng `send_reply`; đếm số ticket cùng `order_id` trong ngày |
 
 ---
 
@@ -233,13 +239,15 @@ Mở lại Phiếu B mục B3. Ghi ở đây những dòng đổi so với vòng
 
 *Mục riêng, không ghi đè HAZOP vòng 1 ở Phiếu B mục B4. Năm guideword và nghĩa của chúng: xem Phiếu B mục B4.*
 
-Tool chọn phân tích: `________________`
+Tool chọn phân tích: `issue_refund` (thẻ S5 là chuyện tiền; tiền máy đi kèm được xét ở bước đọc ticket ngay trước lệnh ghi)
 
 | Tham số / dòng dữ liệu | Guideword (WRONG / INVALID / INCOMPLETE / PERTURBED / INCAPABLE) | Lệch cụ thể (mã ticket, trường dữ liệu của thẻ) | Hậu quả, cho ai | Hiện có gì ngăn? | Gate đề xuất + tầng |
 |---|---|---|---|---|---|
-| | | | | | |
-| | | | | | |
-| | | | | | |
+| `amount_vnd` so với "đã trả bao nhiêu" | INCOMPLETE | Sổ cái có dòng CSKH hoàn tay `T-CSKH-2521` 10.000đ cho O-2521 (`basis: manual`); agent vẫn đề xuất đủ 22.000đ (`S5-21@11` base) | Base: LogiX hoàn trùng 10.000đ. Prepared: cổng R3 chặn cả khoản, khách bị hoàn thiếu 12.000đ | Cổng R3 vòng 1 (đọc `ledger_rows`) chặn, nhưng chặn cứng | `write_gate` khi `tool == "issue_refund"`: `modify` `amount_vnd` = quyền lợi tính từ tracking − tổng đã trả của **mọi** dòng sổ cái của đơn (cả `manual`); ≤ 0 thì `deny` (**chặn**, không làm hỏng ca hợp lệ) |
+| `orders[].refund_status` (cờ "đã hoàn") | INVALID | O-2520 đã hoàn tay 20.000đ (`T-CSKH-2520`) nhưng cờ vẫn `NONE` vì batch đêm chưa chạy; agent chỉ tin cờ | Hoàn hai lần cho một đơn; chị Oanh phải truy thu | Cổng R3 đọc sổ cái thay cờ (vòng 1) | Giữ nguyên R3: nguồn sự thật cho "đã trả" là sổ cái, không phải cờ (**chặn**); `monitors.py` đếm đơn có > 1 dòng hoàn trong ngày (**phát hiện**) |
+| ticket lặp cùng một đơn | PERTURBED | Khách nhắn lại 2–3 lần cho cùng đơn trong ngày (`S5-01`→`S5-02`→`S5-03` đơn O-2501; `S5-04`→`S5-05` đơn O-2502). Base `S5-02@11` ghi thêm 25.000đ; prepared chặn nhưng trả lời "LogiX chưa hoàn khoản nào cho đơn này" | Base: tiền mất thật. Prepared: khách nhận thông tin sai, nhắn tiếp, mỗi lần thêm ≈ 565đ tiền máy và có thể thành ca chuyển người | R3 chặn lệnh ghi; câu trả lời do agent viết, không qua kiểm tra nội dung | `write_gate` khi `tool == "send_reply"`: nếu đơn đã có dòng hoàn thì `modify` câu trả lời nêu khoản đã hoàn và ngày hoàn (**giới hạn thiệt hại**) |
+| `text` đi vào LLM (độ dài) | INCAPABLE | 9/30 ticket dán danh sách hàng 5.000–7.400 ký tự (`S5-70` 5.473, `S5-54` 7.451); tiền đọc = 150đ + 1đ/4 ký tự → `S5-70@11` base 2.018đ > trần 1.500đ | Finance lỗ tiền máy; prepared: `cost_budget_per_ticket_vnd = 1.200` đẩy ca hợp lệ sang người (+10.000đ, khách chờ) | Cổng config `cost_budget_per_ticket_vnd` (vòng 1) | `pre_guard` trả `rewrite`: chỉ giữ phần đầu ticket (câu yêu cầu, mã đơn) trước khi LLM đọc, bỏ danh sách hàng (**giới hạn thiệt hại**); giữ trần config làm lưới an toàn |
+| `amount_vnd` khi CSKH ghi tay **sau** lúc cổng đọc sổ | WRONG | **Nhánh chưa thấy trên trace**: cổng đọc sổ cái lúc 10:00 thấy chưa có gì, CSKH hoàn tay lúc 10:01 cho cùng đơn qua hotline, trợ lý ghi lúc 10:02 | Hoàn trùng dù cổng R3 "đúng"; hai hệ thống không khoá đơn | Không có: mock chạy tuần tự nên không lộ | Vận hành: khi CSKH nhận ca hoàn tay thì đặt khoá đơn (trợ lý `escalate` đơn đang khoá); đối soát ngày của NV-OANH (**phát hiện**). Ghi vào risk register C10 |
 
 Bắt buộc: ít nhất ba dòng, trong đó **một dòng là nhánh bàn chưa thấy trên trace** lúc viết.
 
@@ -257,9 +265,9 @@ Kiểm bằng gì (hàm trong `guards.py`, dòng report nào): …
 
 ### Câu 3.3 · Một giả định về môi trường mà người thiết kế đã ngầm tin, nhưng nhiều khả năng sai ngoài thực tế
 
-Giả định (thứ nằm NGOÀI phần mềm): …
+Giả định (thứ nằm NGOÀI phần mềm): **trợ lý là nơi duy nhất ghi khoản hoàn cho một đơn, và khách chỉ gửi một ticket ngắn cho mỗi đơn**; vì vậy "đọc sổ cái một lần rồi ghi" là đủ để biết đã trả bao nhiêu, và tiền máy mỗi ticket gần như cố định.
 
-Vì sao có thể sai: …
+Vì sao có thể sai: ngoài thực tế CSKH vẫn hoàn tay song song cho ca chuyển người, ca ngoài phạm vi pilot và khách gọi hotline (gói S5 đã có `T-CSKH-2520`, `T-CSKH-2521` với `basis: manual`), cờ `refund_status` chỉ cập nhật bằng batch đêm, và khách sốt ruột nhắn lại 2–3 lần trong ngày (`S5-01`→`S5-03`), có người dán cả danh sách hàng dài hàng nghìn ký tự (`S5-70`). Hai nơi ghi mà không khoá đơn thì vẫn có thể hoàn trùng dù cổng đọc sổ cái đúng.
 
 ---
 
@@ -371,7 +379,8 @@ Vẽ lại cây ở C6. Ở mỗi nhánh đã xử lý, thêm một nút `VÀ [g
 
 | Rủi ro | Khả năng | Tác động | Người phụ trách (PIC, một người) | Dấu hiệu (metric nào, ngưỡng nào) | Xử lý | Ảnh hưởng bước đánh giá | Nhóm chức năng (GOVERN / MAP / MEASURE / MANAGE) |
 |---|---|---|---|---|---|---|---|
-| | | | | | | | |
+| Hoàn trùng hoặc hoàn thiếu vì **hai nơi cùng ghi sổ** (CSKH hoàn tay + trợ lý) mà không khoá đơn; cờ `refund_status` trễ một đêm | Trung bình (gói S5: 2 đơn đã có dòng tay; khách nhắn lại 2–3 lần/ngày) | Cao: tiền mất thật không thu hồi được, hoặc khách bị hoàn thiếu (`S5-21`: 12.000đ) | Phạm Kiều Oanh · `NV-OANH` | Report `wrongful_refund_vnd` > 0 hoặc `under_refund_vnd` > 0; phần "tiền nghi mất" của `worst_warehouse_cost_per_ticket_vnd` trong `monitors.py` > 0 | Cổng `write_gate` trừ tổng đã trả của mọi dòng sổ cái (cả `manual`); quy trình: CSKH khoá đơn trước khi hoàn tay; NV-OANH đối soát sổ cái theo ngày thay vì theo tuần trong pilot | Còn > 0 trên bộ nền hoặc gói sự cố thì không được chọn Tiếp tục (tiêu chí đã ký `wrongful_refund_vnd_max = 0`); Gate 2 phải đo trên sổ thật có ghi tay | MANAGE |
+| Tiền LLM mỗi ticket tăng theo **độ dài chữ khách gõ**; trần config đẩy ca hợp lệ sang người, công duyệt tăng | Cao (9/30 ticket gói S5 dài > 5.000 ký tự) | Trung bình: chi phí mỗi ticket vượt 6.000đ đã ký, ROI giảm; khách chờ người duyệt | Lê Thanh Tùng · `NV-TUNG` | Report "ticket tốn LLM nhiều nhất" > 1.500đ; `review_rate` tăng; `worst_warehouse_cost_per_ticket_vnd` > 6.000đ (vàng) / > 10.000đ (đỏ) | `pre_guard` rút gọn chữ trước khi LLM đọc; giữ `cost_budget_per_ticket_vnd` làm lưới; theo dõi theo kho | Kho nào > 10.000đ/ticket ba ngày liền thì cắt khỏi `pilot_scope` (Thu hẹp); Gate 2 cần phân bố độ dài ticket thật | MEASURE |
 
 Quy tắc: **mỗi dòng phải đổi được một quyết định.** Cột "Dấu hiệu" phải là một metric có trong `monitors.py` hoặc trong report.
 
@@ -387,26 +396,29 @@ Ghi các dòng đổi sau sự cố. Mỗi dòng vẫn phải có một PIC có 
 
 | # nhóm | Trạng thái mới (Xong / Chưa / Không áp dụng) | Bằng chứng mới (mã lần chạy, mục phiếu, số trong report) | PIC |
 |---|---|---|---|
-| | | | |
-| | | | |
+| 2 · Dữ liệu | Xong (cập nhật) | C3.5: `refund_status` là bản sao trễ một đêm, sổ cái có **hai nguồn ghi** (`basis: manual` / `policy`), độ dài `text` quyết định tiền máy | Ngô Gia Bảo |
+| 4 · Quyền hạn | Chưa | Hai nơi cùng có quyền ghi khoản hoàn cho một đơn (CSKH tay và `issue_refund`) mà không khoá đơn (C4 dòng cuối); cổng R3 chặn cứng làm `S5-21@11` hoàn thiếu 12.000đ, chờ bản sửa vòng 2 và mã `S5 · after` | Lưu Văn Việt Đức |
+| 6 · Chi phí | Chưa (chờ số grade S5) | `S5-70@11` base 2.018đ tiền LLM > trần 1.500đ; kho HCM-B2B đã ra khỏi phạm vi (`pilot_scope`); điền chi phí mỗi ticket, ROI, ticket đắt nhất của mốc prepared và after từ report grade S5 | Ngô Gia Bảo |
+| 7 · Vận hành | Xong khi có mã after | Chỉ số mới `worst_warehouse_cost_per_ticket_vnd` đã đăng ký trong `monitors.py` (C8); Runbook 2 thêm tín hiệu chi phí theo kho và hoàn trùng (Runbook 4 dưới đây); Runbook 4–5 đã viết | Thân Đức Trung |
+| 9 · Quyết định | Chưa | Chờ C12 (v2) khớp report grade S5 và `decision_rule` đã ký | Ngô Gia Bảo |
 
 ### Runbook 4 · Sau sự cố trên thẻ (vòng 2)
 
 | Câu hỏi | Trả lời |
 |---|---|
-| Tín hiệu nào ở Runbook 2 (Phiếu B mục B7.5) lẽ ra phải báo trước sự cố này? Nó đã có chưa? | |
-| Bàn thêm hoặc đổi ngưỡng nào, từ bao nhiêu thành bao nhiêu? | |
-| Bàn đổi gì về **người** (số người trực, ai đứng tên, ai được gọi)? | |
-| Bàn đổi gì về **phạm vi** hoặc **quy trình** (kiểm mẫu, ghi chú giải thích, trần)? | |
-| Nói gì với bên thứ ba bị ảnh hưởng (hãng, shop, người nhận, nhân viên duyệt), ai nói, trong bao lâu? | |
-| Dữ liệu cá nhân nào đã rời hệ thống mà không thu hồi được? Báo cho ai? | |
-| Sự cố lộ ra trước qua số máy đo, phản hồi của người, hay đọc nội dung? Nguồn nào bàn chưa có? | |
+| Tín hiệu nào ở Runbook 2 (Phiếu B mục B7.5) lẽ ra phải báo trước sự cố này? Nó đã có chưa? | **Đã có hai, thiếu một.** Có: "Chi phí mỗi ticket so với làm tay" (vàng > 5.000đ, đỏ > 6.000đ) và "Tiền hoàn sai" (> 0đ là đỏ). Nhưng cả hai là **trung bình toàn pilot**, nên một kho đắt hay vài ticket dài bị pha loãng. **Thiếu:** chi phí **theo kho** và tiền LLM **ticket đắt nhất**; chưa có tín hiệu "một đơn có > 1 dòng hoàn trong ngày" |
+| Bàn thêm hoặc đổi ngưỡng nào, từ bao nhiêu thành bao nhiêu? | Thêm tín hiệu `worst_warehouse_cost_per_ticket_vnd` (`monitors.py`): vàng > 6.000đ, đỏ > 10.000đ/ticket ở **bất kỳ kho nào** (trước đây chỉ có trung bình toàn pilot). Thêm "ticket tốn LLM nhiều nhất" (report): vàng > 1.200đ (= `cost_budget_per_ticket_vnd`), đỏ > 1.500đ (`ops_limits`). Thêm "đơn có > 1 dòng hoàn trong ngày": từ 0 (chưa theo dõi) thành **đỏ ngay từ 1 đơn** → NV-OANH soát trong ngày |
+| Bàn đổi gì về **người** (số người trực, ai đứng tên, ai được gọi)? | Giữ 1 người trực (`reviewers_on_shift = 1`): sự cố S5 không phải thiếu người duyệt mà là tốn tiền ở chỗ không cần người; thêm người chỉ làm chi phí tăng 30.000đ/ca. Đổi: **NV-OANH đối soát sổ cái theo ngày** (trước là theo tuần) trong suốt pilot; NV-OANH được gọi ngay khi tín hiệu hoàn trùng đỏ |
+| Bàn đổi gì về **phạm vi** hoặc **quy trình** (kiểm mẫu, ghi chú giải thích, trần)? | Phạm vi: giữ 4 kho đơn lẻ, HCM-B2B làm tay (đã đặt từ vòng 1). Quy trình: CSKH **khoá đơn** trước khi hoàn tay để trợ lý không ghi trùng; khoản hoàn bổ sung chỉ ghi phần còn thiếu (quyền lợi − đã trả). Trần: giữ `cost_budget_per_ticket_vnd = 1.200` làm lưới an toàn, kèm rút gọn chữ trước khi đọc (C4) để ca hợp lệ không bị đẩy sang người |
+| Nói gì với bên thứ ba bị ảnh hưởng (hãng, shop, người nhận, nhân viên duyệt), ai nói, trong bao lâu? | **Khách bị trả lời sai** ("chưa hoàn khoản nào" dù đã hoàn): CSKH (NV-HANH phân công) gọi lại trong 1 ngày làm việc, xác nhận khoản đã hoàn. **Khách bị hoàn thiếu** (kiểu `S5-21`): NV-HANH duyệt hoàn bổ sung phần còn thiếu trong 1 ngày. **Finance / CFO**: NV-TUNG gửi bảng chi phí theo kho (tiền máy, công người, tiền mất) trước 17h như CFO yêu cầu. **Hãng**: không bị ảnh hưởng ở sự cố này (không có lỗi oan) |
+| Dữ liệu cá nhân nào đã rời hệ thống mà không thu hồi được? Báo cho ai? | **Không có** trong sự cố S5: cổng `legal.pii_fields_blocked_to_third_party` vẫn bỏ `customer_note` và `recipient_contact` khỏi thông báo gửi hãng (trace `S5-01@11` prepared: payload chỉ có `order_id`, `parcel_id`, `district`, `delay_days`). Danh sách hàng dài khách dán vào ticket không được gửi đi |
+| Sự cố lộ ra trước qua số máy đo, phản hồi của người, hay đọc nội dung? Nguồn nào bàn chưa có? | Lộ qua **phản hồi của người**: CFO đọc bảng chi phí hai tuần, chị Oanh phát hiện hoàn hai, ba lần khi đối soát. Máy đo của bàn chưa thấy vì chỉ đo trung bình toàn pilot. Nguồn còn thiếu: chi phí **theo kho, theo ngày**, và đối chiếu sổ cái **hai nguồn ghi** (tay + trợ lý) hằng ngày |
 
 ### Runbook 5 · Ba kịch bản "nếu … thì …" cho tuần đầu chạy thử thật
 
-1. Nếu số ticket tăng gấp ___ lần trong một giờ thì: …
-2. Nếu nhà cung cấp LLM lỗi quá ___ phút thì: …
-3. Nếu người duyệt báo không tin một quyết định của trợ lý thì: …
+1. Nếu số ticket tăng gấp **3** lần trong một giờ thì: NV-TUNG xem hàng chờ trên `#logix-refund-pilot-alert`; hàng chờ ≥ 4 ca hoặc chờ lâu nhất > 45 phút thì gọi người trực thứ 2 (`reviewers_on_shift = 2`, `review_capacity_per_hour = 12`, +30.000đ/ca); đã có 2 người mà vẫn có ≥ 1 ca bị ùn thì thu hẹp `business.pilot_scope` về 1 kho; theo dõi `worst_warehouse_cost_per_ticket_vnd`, kho nào > 10.000đ/ticket thì cắt kho đó trước (Phiếu B mục B7.6).
+2. Nếu nhà cung cấp LLM lỗi quá **15** phút thì: NV-TUNG tắt `issue_refund` trong `config/switches.json` (ticket hoàn tiền tự chuyển NV-HANH duyệt tay); không để trợ lý chạy chế độ `fail_open`; đăng giờ tắt và số ticket đang chờ lên kênh; bật lại khi LLM ổn định 30 phút liền và chạy `lab10.trace` một ticket mẫu thấy đúng.
+3. Nếu người duyệt báo không tin một quyết định của trợ lý thì: NV-HANH ghi mã ticket vào kênh; NV-TUNG mở trace ticket đó, so số ngày trễ, chính sách, khoản đã trả trong sổ cái với quyết định; sai thì áp điều kiện dừng tương ứng (`operations.stop_conditions`) và NV-OANH đối soát cùng ngày; đúng nhưng khó hiểu thì bật `operations.decision_note = true` và `review_sampling_pct ≥ 10` (điều kiện để nhân viên thôi kiểm tay 100%, `staff_behavior.trust_conditions`).
 
 ---
 
