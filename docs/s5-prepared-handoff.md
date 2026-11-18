@@ -1,5 +1,7 @@
 # S5 · Bàn giao prepared cho TV1 · chưa sửa vòng 2
 
+> Lần grade mới nhất theo yêu cầu: `R-S5-grade-20261118-171815-6f5ec8`, đo commit `3a2acdc`; [report](evidence/R-S5-grade-20261118-171815-6f5ec8/grade-report.json). Kết quả không đổi vì chưa sửa guards/config: visible và integrity chưa đạt, criteria/regression/monitor đạt. Đây là chạy lại, không phải cải tiến vòng 2. Các số chi tiết bên dưới thuộc lần đo đầu để giữ nguồn bằng chứng.
+
 - Commit đã đo: `5d9cc814cd8cf802e8105ceb93bad4edd4295818`; code/config vòng 1 khớp bản đóng băng hash `6640aec4`.
 - Lần grade đầu sau nhận thẻ: `R-S5-grade-20261118-171201-6f5ec8` · kết luận **FAIL**, không gọi là PASS.
 - [Report JSON](evidence/R-S5-grade-20261118-171201-6f5ec8/grade-report.json) · [Report Markdown](evidence/R-S5-grade-20261118-171201-6f5ec8/grade-report.md) · [Nhật ký](evidence/R-S5-grade-20261118-171201-6f5ec8/journal.jsonl).

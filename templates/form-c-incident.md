@@ -32,7 +32,7 @@ Mỗi lệnh `lab10.eval` và `lab10.grade` tự ghi một dòng vào `runs/jour
 |---|---|---|---|---|---|---|---|---|
 | 1 | `R-S5-prepared-20261118-171202-6f5ec8` (grade `R-S5-grade-20261118-171201-6f5ec8`) | S5 · prepared | Nhận S5; guards/config vòng 1 giữ nguyên, monitor C8 đã có trước khi nhận gói | 0,9444 [0,8333;1,0] | 0,9444 | 0 · 0 · 0 | 0,1667 | 85/90 đạt; S5-21 hỏng cả 5 seed; coverage 60%; còn hoàn thiếu |
 | 2 | `R-S5-after-20261118-171202-6f5ec8` | S5 · after | Bản hiện tại tại lần grade đầu, CHƯA sửa guards/config vòng 2 | 0,9444 [0,8333;1,0] | 0,9444 | 0 · 0 · 0 | 0,1667 | Giống prepared; chưa ghi nhận cải thiện vòng 2 |
-| 3 | | Sx · after | | | | | | |
+| 3 | `R-S5-after-20261118-171815-6f5ec8` (grade `R-S5-grade-20261118-171815-6f5ec8`) | S5 · after | Chạy lại theo yêu cầu, KHÔNG thay guards/config | 0,9444 [0,8333;1,0] | 0,9444 | 0 · 0 · 0 | 0,1667 | Không cải thiện: S5-21 vẫn thiếu 12.000đ/seed; integrity thiếu 28 file gói khác |
 | 4 | | base · after | (kiểm không regression) | | | | | |
 
 ---
