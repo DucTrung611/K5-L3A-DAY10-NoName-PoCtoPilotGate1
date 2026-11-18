@@ -282,9 +282,9 @@ python3 -m unittest discover -s tests
 
 | # | Cổng (hàm và nhánh, ví dụ `write_gate` khi `tool == "issue_refund"`) | Ứng với dòng nào ở B6 / B4 | Chặn điều gì, dựa vào nguồn sự thật nào | Mã lần chạy `base · after` | Ca đang đúng nào bị hỏng? (phải là "không") |
 |---|---|---|---|---|---|
-| 1 | | | | | |
-| 2 | | | | | |
-| 3 | | | | | |
+| 1 | `write_gate` khi `tool == "issue_refund"`: tính lại quyền lợi | B6 ★R1 · B4 dòng `delay_days` WRONG | Chặn khoản hoàn lớn hơn quyền lợi tính từ tracking: `H.entitlement_vnd(H.effective_policy(...), order, H.db_delay_days(kiện, ctx.as_of), delay_cause)`; lớn hơn thì `modify` về đúng số, bằng 0 thì `deny`. Nguồn sự thật: `ctx.tools.lookup_order`, `orders[].parcels`, `policies` theo ngày | | |
+| 2 | `write_gate` khi `tool == "file_carrier_fault"` | B6 ★R2 · B4 dòng `parcel_id` WRONG, dòng INCAPABLE | Chặn lỗi hãng sai kiện, sai số ngày trễ, không có căn cứ (`H.carrier_at_fault`), ghi trong lúc `fail_open`, hoặc từ lỗi thứ 3 của một hãng trong ngày (`ctx.tools.fault_rows`, `ops_limits().max_auto_strikes_per_carrier_per_day`). Nguồn sự thật: tracking của kiện, chính sách hiệu lực | | |
+| 3 | `write_gate` khi `tool == "issue_refund"`: chống ghi lặp và phê duyệt sai | B6 ★R3 | Chặn ghi lần hai cho cùng đơn (`ctx.tools.ledger_rows(order_id=...)`: tổng đã trả + khoản mới > quyền lợi thì `deny`) và chặn `approval_id` không đúng ticket/đơn, không `valid`, hết hạn hoặc `max_vnd` nhỏ hơn số tiền (`ctx.tools.lookup_approvals`) thì `escalate`. Nguồn sự thật: sổ cái, bảng `approvals` | | |
 
 ### B7.2 · Câu 2.7 · Hai bước tránh rò rỉ dữ liệu
 
