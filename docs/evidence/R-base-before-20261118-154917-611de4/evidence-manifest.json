@@ -1,0 +1,17 @@
+{
+  "run_id": "R-base-before-20261118-154917-611de4",
+  "sign_commit": "806ad8ccdbd0e26f219da8eab13eec95e6e7b3c5",
+  "criteria_sha256": "b99cc0e425434bb93292decfcfb553f5efda575e42a9eb7b042ced5d66927757",
+  "signed_at_machine_time": "2026-11-18T15:48:52",
+  "note": "CLI baseline after successful push of sign commit. Stage base ignores team guards and operating gates. Original runs journal retained; copies are unmodified evidence. B4/B6 and TV4 config already existed before this baseline; no claim of earlier measurement.",
+  "files": {
+    "acceptance_criteria.json": "b99cc0e425434bb93292decfcfb553f5efda575e42a9eb7b042ced5d66927757",
+    "acceptance_criteria.lock": "f97de805e843fa81a8183ff950c83526ca0da1ee0cb51f522a13c3e39f4db3c4",
+    "eval-output.txt": "54d3b2bd7e25aeb495c539d1aba7e66c240bf3bdb9fba7a47ac8d491d331292d",
+    "gate-output.txt": "b654a7a6274f4c5ec6e0080c77af4a4fd3990f9a8740d9f76abc3862cb468878",
+    "journal.jsonl": "7965b6d9f977d5c0f7773a4bd6120b8dcd83afbc03e2f443626c40125e0eac42",
+    "report.json": "77b31745942fc1631117eda2e70060fb21ef3625667cdfba8c58a003f9b8f0e3",
+    "T-002@55.json": "044652f6fa11b07649038ee56d6cb0535f3e187e84c511d77794061888b330a3",
+    "T-002@55.txt": "9bd3645d838132830a643d71bfba355e004e8330a775b235d2b82d3afea4b483"
+  }
+}
