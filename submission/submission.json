@@ -8,10 +8,10 @@
   ],
   "incident": "S5",
   "decision_v1": "Tiếp tục",
-  "decision_v2": "",
+  "decision_v2": "Tiếp tục",
   "three_lines": {
-    "environment_assumption": "",
-    "reduce_or_prevent": "",
-    "measure_in_pilot": ""
+    "environment_assumption": "Trợ lý là nơi duy nhất ghi khoản hoàn cho một đơn, và khách chỉ gửi một ticket ngắn cho mỗi đơn; vì vậy \"đọc sổ cái một lần rồi ghi\" là đủ để biết đã trả bao nhiêu, và tiền máy mỗi ticket gần như cố định (câu 3.3, C5) — sai ngoài thực tế vì CSKH vẫn hoàn tay song song (`T-CSKH-2520`, `T-CSKH-2521`, `basis: manual`), cờ `refund_status` chỉ cập nhật bằng batch đêm, khách nhắn lại 2–3 lần cho một đơn, và ticket dán danh sách hàng dài tới 7.400 ký tự.",
+    "reduce_or_prevent": "Cổng phạm vi (loại HCM-B2B) và ngân sách mỗi ticket 1.200đ **ngăn** được hai nhánh chi phí trong pilot (không còn kho đắt hơn làm tay, ticket LLM đắt nhất 665đ < 1.500đ), và R3 sau khi sửa **ngăn** hoàn trùng nhưng vẫn trả đúng phần còn lại, vì nó tính quyền lợi trừ tổng đã trả của mọi dòng đã có trong sổ cái (gói S5: hoàn sai 890.000đ → 0đ, hoàn thiếu 60.000đ → 0đ); nhưng với tác hại tài chính tổng thể chúng chỉ **giảm**: kho sỉ vẫn tốn công làm tay ngoài pilot, ticket dài hợp lệ vẫn tốn 10.000đ công duyệt, và khoản CSKH trả tay chưa kịp vào sổ lúc trợ lý chạy thì R3 không thấy.",
+    "measure_in_pilot": "Đo lại chi phí mỗi ticket theo kho với giá LLM và công duyệt thật (không phải 1đ/4 ký tự và 10.000đ cố định), phân bố độ dài ticket thật và tỉ lệ ticket vượt ngân sách 1.200đ, tỉ lệ khách nhắn lại nhiều lần cho một đơn, và độ trễ từ lúc CSKH hoàn tay đến lúc dòng đó vào sổ cái — rồi tính lại ROI trên toàn bộ ticket (kể cả phần làm tay ngoài phạm vi), không chỉ trong phạm vi pilot."
   }
 }
