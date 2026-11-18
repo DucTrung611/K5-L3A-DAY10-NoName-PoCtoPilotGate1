@@ -1,0 +1,282 @@
+[
+  {
+    "ticket": "S5-02",
+    "stage": "base",
+    "status": "refunded",
+    "passed": false,
+    "paid": 25000,
+    "cost": 665,
+    "warehouse": "HN",
+    "events": [
+      {
+        "type": "proposal",
+        "amount_vnd": 25000,
+        "payer": "LOGIX",
+        "basis": "policy",
+        "delay_days_used": 4,
+        "do_fault": true
+      },
+      {
+        "type": "result",
+        "status": "refunded",
+        "amount_vnd": 25000,
+        "reason": "",
+        "cost_vnd": 665
+      }
+    ]
+  },
+  {
+    "ticket": "S5-02",
+    "stage": "prepared",
+    "status": "denied",
+    "passed": true,
+    "paid": 0,
+    "cost": 565,
+    "warehouse": "HN",
+    "events": [
+      {
+        "type": "proposal",
+        "amount_vnd": 25000,
+        "payer": "LOGIX",
+        "basis": "policy",
+        "delay_days_used": 4,
+        "do_fault": true
+      },
+      {
+        "type": "gate",
+        "tool": "issue_refund",
+        "action": "deny",
+        "reason": "R3: tổng đã hoàn và khoản mới vượt quyền lợi theo tracking",
+        "changes": {}
+      },
+      {
+        "type": "result",
+        "status": "denied",
+        "amount_vnd": 0,
+        "reason": "lệnh hoàn bị chặn",
+        "cost_vnd": 565
+      }
+    ]
+  },
+  {
+    "ticket": "S5-20",
+    "stage": "base",
+    "status": "refunded",
+    "passed": false,
+    "paid": 20000,
+    "cost": 666,
+    "warehouse": "HCM",
+    "events": [
+      {
+        "type": "proposal",
+        "amount_vnd": 20000,
+        "payer": "LOGIX",
+        "basis": "policy",
+        "delay_days_used": 4,
+        "do_fault": true
+      },
+      {
+        "type": "result",
+        "status": "refunded",
+        "amount_vnd": 20000,
+        "reason": "",
+        "cost_vnd": 666
+      }
+    ]
+  },
+  {
+    "ticket": "S5-20",
+    "stage": "prepared",
+    "status": "denied",
+    "passed": true,
+    "paid": 0,
+    "cost": 566,
+    "warehouse": "HCM",
+    "events": [
+      {
+        "type": "proposal",
+        "amount_vnd": 20000,
+        "payer": "LOGIX",
+        "basis": "policy",
+        "delay_days_used": 4,
+        "do_fault": true
+      },
+      {
+        "type": "gate",
+        "tool": "issue_refund",
+        "action": "deny",
+        "reason": "R3: tổng đã hoàn và khoản mới vượt quyền lợi theo tracking",
+        "changes": {}
+      },
+      {
+        "type": "result",
+        "status": "denied",
+        "amount_vnd": 0,
+        "reason": "lệnh hoàn bị chặn",
+        "cost_vnd": 566
+      }
+    ]
+  },
+  {
+    "ticket": "S5-21",
+    "stage": "base",
+    "status": "refunded",
+    "passed": false,
+    "paid": 22000,
+    "cost": 665,
+    "warehouse": "CT",
+    "events": [
+      {
+        "type": "proposal",
+        "amount_vnd": 22000,
+        "payer": "LOGIX",
+        "basis": "policy",
+        "delay_days_used": 5,
+        "do_fault": true
+      },
+      {
+        "type": "result",
+        "status": "refunded",
+        "amount_vnd": 22000,
+        "reason": "",
+        "cost_vnd": 665
+      }
+    ]
+  },
+  {
+    "ticket": "S5-21",
+    "stage": "prepared",
+    "status": "denied",
+    "passed": false,
+    "paid": 0,
+    "cost": 565,
+    "warehouse": "CT",
+    "events": [
+      {
+        "type": "proposal",
+        "amount_vnd": 22000,
+        "payer": "LOGIX",
+        "basis": "policy",
+        "delay_days_used": 5,
+        "do_fault": true
+      },
+      {
+        "type": "gate",
+        "tool": "issue_refund",
+        "action": "deny",
+        "reason": "R3: tổng đã hoàn và khoản mới vượt quyền lợi theo tracking",
+        "changes": {}
+      },
+      {
+        "type": "result",
+        "status": "denied",
+        "amount_vnd": 0,
+        "reason": "lệnh hoàn bị chặn",
+        "cost_vnd": 565
+      }
+    ]
+  },
+  {
+    "ticket": "S5-50",
+    "stage": "base",
+    "status": "escalated",
+    "passed": true,
+    "paid": 0,
+    "cost": 1856,
+    "warehouse": "HCM-B2B",
+    "events": [
+      {
+        "type": "proposal",
+        "amount_vnd": 230000,
+        "payer": "LOGIX",
+        "basis": "policy",
+        "delay_days_used": 7,
+        "do_fault": true
+      },
+      {
+        "type": "result",
+        "status": "escalated",
+        "amount_vnd": 0,
+        "reason": "vượt hạn mức tự động, chưa có phê duyệt",
+        "cost_vnd": 1856
+      }
+    ]
+  },
+  {
+    "ticket": "S5-51",
+    "stage": "base",
+    "status": "escalated",
+    "passed": true,
+    "paid": 0,
+    "cost": 565,
+    "warehouse": "HCM-B2B",
+    "events": [
+      {
+        "type": "proposal",
+        "amount_vnd": 230000,
+        "payer": "LOGIX",
+        "basis": "policy",
+        "delay_days_used": 8,
+        "do_fault": true
+      },
+      {
+        "type": "result",
+        "status": "escalated",
+        "amount_vnd": 0,
+        "reason": "vượt hạn mức tự động, chưa có phê duyệt",
+        "cost_vnd": 565
+      }
+    ]
+  },
+  {
+    "ticket": "S5-70",
+    "stage": "base",
+    "status": "refunded",
+    "passed": true,
+    "paid": 18000,
+    "cost": 2018,
+    "warehouse": "HN",
+    "events": [
+      {
+        "type": "proposal",
+        "amount_vnd": 18000,
+        "payer": "LOGIX",
+        "basis": "policy",
+        "delay_days_used": 3,
+        "do_fault": true
+      },
+      {
+        "type": "result",
+        "status": "refunded",
+        "amount_vnd": 18000,
+        "reason": "",
+        "cost_vnd": 2018
+      }
+    ]
+  },
+  {
+    "ticket": "S5-70",
+    "stage": "prepared",
+    "status": "escalated",
+    "passed": true,
+    "paid": 0,
+    "cost": 200,
+    "warehouse": "HN",
+    "events": [
+      {
+        "type": "business_gate",
+        "gate": "cost_budget_per_ticket_vnd",
+        "budget": 1200,
+        "spent": 200,
+        "next_call": 1518
+      },
+      {
+        "type": "result",
+        "status": "escalated",
+        "amount_vnd": 0,
+        "reason": "vượt ngân sách chi phí mỗi ticket (config): chuyển người đọc",
+        "cost_vnd": 200
+      }
+    ]
+  }
+]

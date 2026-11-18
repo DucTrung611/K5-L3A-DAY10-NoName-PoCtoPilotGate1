@@ -1,0 +1,15 @@
+{
+  "measured_commit": "3a2acdc90ed94b2bff3a24ba0b449e1562e74c7a",
+  "grade_exit": 1,
+  "code_hash": "6f5ec800caaaf183b7b539503ded1dd6cbef8d8f55743fb6e0bc2ce467499f14",
+  "note": "User-requested rerun; no guards/config changes since initial S5 grade.",
+  "files": {
+    "grade-output.txt": "1248a559e775502ca10155800380beaffe22cf4ff927b52ca56ef05faa4b2091",
+    "grade-report.json": "0103cbf68bdcb83b8f31d153bdfcd7ef9701754225f8e4e65d3d2b2529da2796",
+    "grade-report.md": "e0d4fc281eb861f259323502362823dd90e7f07458e988a66cea7d5667453b3b",
+    "journal.jsonl": "5bfb0e42b41d4c01fe5360bd7fe05d24132519e4eef66c6c5fbdc7673a9c3acd",
+    "R-S5-after-20261118-171815-6f5ec8/report.json": "49dc19b388a05eadec02a8ca7b8296f264a7c5559bf75076b7e2d78d8deb4e06",
+    "R-S5-before-20261118-171815-6f5ec8/report.json": "8344c7088f7fde3c19e54cfdc393296e8e1d5a1eb85d3ea0489091ffb762f007",
+    "R-S5-prepared-20261118-171815-6f5ec8/report.json": "5b51b76aa03005b741a20b26a193ad854c31efa06ae7d8a6db9f4a4b51e2ba86"
+  }
+}

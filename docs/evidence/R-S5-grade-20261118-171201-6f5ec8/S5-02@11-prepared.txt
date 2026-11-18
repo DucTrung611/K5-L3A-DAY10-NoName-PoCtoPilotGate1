@@ -1,0 +1,15 @@
+== S5-02 @ seed 11 · suite S5 · stage prepared ==
+TICKET: Em nhắn lại lần nữa: đơn gốm giao chậm, hoàn phí giúp em với.
+  00 ticket           {"ticket_id": "S5-02", "seed": 11, "channel": "zalo"}
+  01 llm_extract      {"intent": "LATE", "claimed_delay_days": null, "trust_claim": false, "directive": null}
+  02 tracking         {"order_id": "O-2501", "db_delay_days": 4, "cause": "CARRIER", "cause_recorded": true, "parcels": [{"parcel_id": "O-2501-P1", "carrier_id": "GHSH", "delay": 4}]}
+  03 policy           {"policy_id": "REFUND-v3", "pinned": false}
+  04 proposal         {"amount_vnd": 25000, "payer": "LOGIX", "basis": "policy", "delay_days_used": 4, "do_fault": true}
+  05 gate             {"tool": "issue_refund", "action": "deny", "reason": "R3: tổng đã hoàn và khoản mới vượt quyền lợi theo tracking", "changes": {}}
+  06 tool             {"tool": "send_reply", "to": "customer:C-07", "ticket_id": "S5-02", "payload": {"text": "Yêu cầu hoàn tiền cho đơn O-2501 đã bị từ chối ở bước kiểm tra. LogiX chưa hoàn khoản nào cho đơn này.", "amount_vnd": 0}}
+  07 result           {"status": "denied", "amount_vnd": 0, "reason": "lệnh hoàn bị chặn", "cost_vnd": 565}
+SỔ CÁI   : []
+LỖI HÃNG : []
+GỬI HÃNG : []
+NHÃN     : {"status": ["denied"], "refund_vnd": 0, "faults": [], "payer": "LOGIX", "alt_escalate": true}
+KẾT QUẢ  : ĐẠT {}
