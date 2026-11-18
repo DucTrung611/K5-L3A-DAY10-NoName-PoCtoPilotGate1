@@ -30,7 +30,7 @@ Mọi con số trong quyết định Gate 1 phải trỏ về một dòng ở đ
 | # | Mã lần chạy | Bộ ticket · mốc | Đổi MỘT thứ gì so với lần trước | pass_rate (khoảng tin cậy 95%) | pass_k | Hoàn sai (đ) · lỗi hãng oan · lộ dữ liệu | Tỉ lệ chuyển người | Kết luận (một câu) |
 |---|---|---|---|---|---|---|---|---|
 | 1 | `R-base-before-20261118-154917-611de4` | base · base | Baseline sau commit ký `806ad8c`; stage base bỏ qua cổng/config nhóm | 0,9909 [0,9727; 1,0] | 0,9545 | 20.000 · 1 · 0 | 0,2273 | 109/110 đạt, còn lỗi T-002@55; chưa đủ tiêu chí an toàn |
-| 2 | | base · after | (cổng vòng 1, thử trước khi chốt) | | | | | |
+| 2 | `R-base-after-20261118-162239-21c937` | base · after | Tích hợp R1–R3 và config tại commit `47f1bcf`; đo cả bản tích hợp, không tách tác động từng thay đổi | 1,0 [1,0; 1,0] | 1,0 | 0 · 0 · 0 | 0,2273 | 110/110 đạt; không ca mới hỏng, coverage 100%; chưa checkpoint |
 | 3 | | base · prepared | (cổng vòng 1 đã chốt) | | | | | |
 | 4 | | | | | | | | |
 
@@ -285,9 +285,10 @@ python3 -m unittest discover -s tests
 
 | # | Cổng (hàm và nhánh, ví dụ `write_gate` khi `tool == "issue_refund"`) | Ứng với dòng nào ở B6 / B4 | Chặn điều gì, dựa vào nguồn sự thật nào | Mã lần chạy `base · after` | Ca đang đúng nào bị hỏng? (phải là "không") |
 |---|---|---|---|---|---|
-| 1 | `write_gate` khi `tool == "issue_refund"`: tính lại quyền lợi | B6 ★R1 · B4 dòng `delay_days` WRONG | Chặn khoản hoàn lớn hơn quyền lợi tính từ tracking: `H.entitlement_vnd(H.effective_policy(...), order, H.db_delay_days(kiện, ctx.as_of), delay_cause)`; lớn hơn thì `modify` về đúng số, bằng 0 thì `deny`. Nguồn sự thật: `ctx.tools.lookup_order`, `orders[].parcels`, `policies` theo ngày | | |
-| 2 | `write_gate` khi `tool == "file_carrier_fault"` | B6 ★R2 · B4 dòng `parcel_id` WRONG, dòng INCAPABLE | Chặn lỗi hãng sai kiện, sai số ngày trễ, không có căn cứ (`H.carrier_at_fault`), ghi trong lúc `fail_open`, hoặc từ lỗi thứ 3 của một hãng trong ngày (`ctx.tools.fault_rows`, `ops_limits().max_auto_strikes_per_carrier_per_day`). Nguồn sự thật: tracking của kiện, chính sách hiệu lực | | |
-| 3 | `write_gate` khi `tool == "issue_refund"`: chống ghi lặp và phê duyệt sai | B6 ★R3 | Chặn ghi lần hai cho cùng đơn (`ctx.tools.ledger_rows(order_id=...)`: tổng đã trả + khoản mới > quyền lợi thì `deny`) và chặn `approval_id` không đúng ticket/đơn, không `valid`, hết hạn hoặc `max_vnd` nhỏ hơn số tiền (`ctx.tools.lookup_approvals`) thì `escalate`. Nguồn sự thật: sổ cái, bảng `approvals` | | |
+| 1 | `write_gate` khi `tool == "issue_refund"`: tính lại quyền lợi | B6 ★R1 · B4 dòng `delay_days` WRONG | Chặn khoản hoàn lớn hơn quyền lợi tính từ tracking: `H.entitlement_vnd(H.effective_policy(...), order, H.db_delay_days(kiện, ctx.as_of), delay_cause)`; lớn hơn thì `modify` về đúng số, bằng 0 thì `deny`. Nguồn sự thật: `ctx.tools.lookup_order`, `orders[].parcels`, `policies` theo ngày | `R-base-after-20261118-162239-21c937` (commit 47f1bcf) | Không trên bộ nền 110 lượt; chưa chứng minh mọi nhánh sự cố |
+| 2 | `write_gate` khi `tool == "file_carrier_fault"` | B6 ★R2 · B4 dòng `parcel_id` WRONG, dòng INCAPABLE | Chặn lỗi hãng sai kiện, sai số ngày trễ, không có căn cứ (`H.carrier_at_fault`), ghi trong lúc `fail_open`, hoặc từ lỗi thứ 3 của một hãng trong ngày (`ctx.tools.fault_rows`, `ops_limits().max_auto_strikes_per_carrier_per_day`). Nguồn sự thật: tracking của kiện, chính sách hiệu lực | `R-base-after-20261118-162239-21c937` (commit 47f1bcf) | Không trên bộ nền 110 lượt; chưa chứng minh mọi nhánh sự cố |
+| 3 | `write_gate` khi `tool == "issue_refund"`: chống ghi lặp và phê duyệt sai | B6 ★R3 | Chặn ghi lần hai cho cùng đơn (`ctx.tools.ledger_rows(order_id=...)`: tổng đã trả + khoản mới > quyền lợi thì `deny`) và chặn `approval_id` không đúng ticket/đơn, không `valid`, hết hạn hoặc `max_vnd` nhỏ hơn số tiền (`ctx.tools.lookup_approvals`) thì `escalate`. Nguồn sự thật: sổ cái, bảng `approvals` | `R-base-after-20261118-162239-21c937` (commit 47f1bcf) | Không trên bộ nền 110 lượt; chưa chứng minh mọi nhánh sự cố |
+
 
 ### B7.2 · Câu 2.7 · Hai bước tránh rò rỉ dữ liệu
 

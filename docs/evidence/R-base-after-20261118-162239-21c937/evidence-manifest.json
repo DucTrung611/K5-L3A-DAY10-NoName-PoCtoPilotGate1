@@ -1,0 +1,27 @@
+{
+  "measured_commit": "47f1bcfcdeb7a2372e02e50115228bb3f411ba70",
+  "run_id": "R-base-after-20261118-162239-21c937",
+  "code_hash": "21c9372c9351191dd6f7deadaa76850bcd4bc558d483d8d376e91dadab91a76d",
+  "baseline_run_id": "R-base-before-20261118-154917-611de4",
+  "newly_failed": [],
+  "public_tests": {
+    "ran": 13,
+    "ok": true
+  },
+  "gate_exit_code": 0,
+  "scope_note": "Integrated code and operating gates measured together; result does not isolate individual R2/R3 prevention. No checkpoint or incident grade performed.",
+  "files": {
+    "eval-output.txt": "b497c279c9e3add02d3146d2d4d2a625bd614fb038dd0b926e3c1a2be3ba01eb",
+    "gate-output.txt": "bb4d261f477a44fffd64f25983e51299f9770fdcabef79da14242d854b2f0c5d",
+    "guards.py": "8c4119cdb528714e41ad58c919cb54e90f5ed2b363385b5afd7ed9d934fff210",
+    "journal.jsonl": "b197f94ecddbea25c6e6b59cdc44f52ee80813b3e31e9f780a42a6e6ca656cbb",
+    "measurement.json": "75d6b692b6a566d1f6cda773a0023025883e56b08a3273b4722260ea9b8906ce",
+    "monitors.py": "d1bc112a4a6af68833114a1af8309dc542f0c6eec94c98e0e8e9f95128f5704f",
+    "operating_gates.json": "b73d4f0d89739f7ea08134b878971e7a23bdc5653e1007fcac6c0324f2a71704",
+    "public-tests.txt": "247acb4c27cc687a4b8cf1669d7358a8a7d03718b82530390085815d4671c669",
+    "report.json": "78495d80c4fc703e70e2caa53263d534172246d05608e01533cb7fbd0dad9783",
+    "switches.json": "7f6b75433f65640f6610a7930ecefae27fc8b1891634803815ef48d9c4a0b457",
+    "T-002@55.json": "996bb8cb97122f522610facccd5789f5933923a404ed79403440da1058cab333",
+    "T-002@55.txt": "3d0f47664d3b60cc2a710afa381c47ca2d2bf540a2a4f4e34b874104228c0c5e"
+  }
+}

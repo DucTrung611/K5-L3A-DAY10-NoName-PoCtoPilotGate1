@@ -1,5 +1,7 @@
 # Bàn giao TV2 · Lưu Văn Việt Đức · 2A202603445
 
+> CP3 cập nhật: đã đo commit `47f1bcf`, run `R-base-after-20261118-162239-21c937`, public tests 13/13, bộ nền 110/110, không regression. Xem [bàn giao R1–R3](tv1-round1-handoff.md). Chưa checkpoint. Các trạng thái bên dưới là lịch sử.
+
 > Trạng thái mới: CP2 đã ký và push commit `806ad8c` trước lần eval đầu tiên. CP3 baseline `R-base-before-20261118-154917-611de4` đã đo; B0/B1/B2 và A5 đã cập nhật. Bộ file gửi TV1: [bàn giao baseline](tv1-baseline-handoff.md). Chưa chốt vòng 1, chưa chạy after/grade. Các ghi nhận “chưa ký/chưa đo” bên dưới là lịch sử chuẩn bị, không phải trạng thái hiện tại.
 
 > Cập nhật tại main 726eca5: TV4 đã hoàn thành câu 1.2/1.4, B4/B5/B6/B7.5/B7.6 và operations/legal. Phiếu A đã gộp nội dung TV4 với phần soát kỹ thuật TV2 ở A3/A4; không dùng nháp TV2 thay phần TV4. Tiêu chí JSON giữ nguyên, chưa ký hoặc đo. Các mô tả thiếu mục và đề xuất bên dưới là lịch sử trước lần cập nhật này. core.autocrlf đã đặt false tại repo; danh tính Git dùng MSSV trưởng nhóm và email giả theo README.
