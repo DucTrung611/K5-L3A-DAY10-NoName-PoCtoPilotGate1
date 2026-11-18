@@ -113,7 +113,7 @@ người chịu hại thường là bên thứ ba). Định nghĩa đầy đủ 
 |---|---|---|---|
 | Vì sao người gặp coi đây là lỗi | Tiền/đối soát lặp cho quyền lợi đã trả | Khách bị từ chối dù còn 12.000đ hợp lệ | Chất lượng đúng nhưng tổng công + tiền máy cao hơn quy trình tay |
 | Kiểu giải pháp: phản hồi cho người dùng / trao quyền kiểm soát cho người / khác | Cổng ledger chống ghi lặp; đối soát với người | Tính phần còn lại trong cổng; chỉ chuyển người khi dữ kiện/phê duyệt thiếu | Scope theo kho và budget đọc, quyết định của TV3/TV4 |
-| Đường đi của người sau khi có giải pháp (ví dụ: ticket chuyển sang người duyệt → duyệt → khách được trả lời) | Đã trả đủ thì giải thích từ chối ghi lại, nghi vấn gửi đối soát | Khoản còn lại hợp lệ được hoàn, khách nhận tin khớp sổ; chưa triển khai sửa này | Ngoài scope đi làm tay từ đầu; vượt budget chuyển người, theo dõi cả chi phí duyệt |
+| Đường đi của người sau khi có giải pháp (ví dụ: ticket chuyển sang người duyệt → duyệt → khách được trả lời) | Đã trả đủ thì giải thích từ chối ghi lại, nghi vấn gửi đối soát | Khoản còn lại hợp lệ được hoàn, khách nhận tin khớp sổ; đã triển khai ở vòng 2 (`730d909`): `S5-21` after hoàn 12.000đ (`R-S5-after-20261118-173334-3a9092`) | Ngoài scope đi làm tay từ đầu; vượt budget chuyển người, theo dõi cả chi phí duyệt |
 | Hệ thống học được gì (tín hiệu ghi lại để theo dõi: tên metric trong `monitors.py`) | worst_warehouse_cost_per_ticket_vnd thấy nghi hoàn lặp trong ngày nhưng không thấy ledger_seed | Monitor C8 không thấy hoàn thiếu; cần đọc under_refund_vnd ở offline report và phản hồi khách | worst_warehouse_cost_per_ticket_vnd + chi phí phân khúc/LLM trong report |
 
 Yêu cầu: ít nhất **hai lỗi có nguồn khác nhau** ở phần 2, và ít nhất một lỗi được xếp đúng là **lỗi chìm**.
@@ -267,7 +267,7 @@ Bắt buộc: ít nhất ba dòng, trong đó **một dòng là nhánh bàn chư
 
 Kiểm được bằng code hoặc bằng một con số trong report: Trước issue_refund, tính tổng quyền lợi theo tracking/chính sách trừ các khoản đã ghi của đúng đơn trong sổ cái (kể cả ledger_seed). Khi đã trả đủ thì không ghi lại; khi còn quyền lợi và đủ phê duyệt thì khoản mới phải đúng phần hợp lệ còn lại, không từ chối chỉ vì proposal ban đầu quá lớn. Với S5-21: 22.000 - 10.000 = 12.000đ còn được trả.
 
-Kiểm bằng gì (hàm trong `guards.py`, dòng report nào): TV1 sửa _refund_gate ở guards.py (bản hiện tại, không sửa guards_round1.py); đối chiếu S5-21@11 prepared/after: ledger 12.000đ, status refunded, fault MKD/O-2521-P1, reply khớp; đồng thời S5-02/S5-20 không trả thêm và base regression giữ đạt. Chưa sửa nên chưa có bằng chứng after đạt.
+Kiểm bằng gì (hàm trong `guards.py`, dòng report nào): TV1 sửa _refund_gate ở guards.py (bản hiện tại, không sửa guards_round1.py); đối chiếu S5-21@11 prepared/after: ledger 12.000đ, status refunded, fault MKD/O-2521-P1, reply khớp; đồng thời S5-02/S5-20 không trả thêm và base regression giữ đạt. Sau sửa (`730d909`): grade `R-S5-grade-20261118-173333-3a9092` — S5 after 90/90, hoàn sai và hoàn thiếu 0đ; bộ nền 110/110, `regression ✅` → specification được giữ.
 
 ### Câu 3.3 · Một giả định về môi trường mà người thiết kế đã ngầm tin, nhưng nhiều khả năng sai ngoài thực tế
 
@@ -376,7 +376,7 @@ Vẽ lại cây ở C6. Ở mỗi nhánh đã xử lý, thêm một nút `VÀ [g
     ├─ [2] AI đọc rồi vẫn duyệt tay ở kho sỉ VÀ [pilot_scope cho kho không có lời vào lại]
     │  └─ HCM-B2B ngoài scope; 12 ticket/ngày vẫn làm tay, chưa chứng minh AI có lời ở kho này
     └─ [3] Nội dung dài VÀ [budget trước đọc hỏng hoặc chi phí duyệt làm tổng vượt ngưỡng]
-       └─ budget 1.200đ, LLM lớn nhất after 664đ; monitor chỉ phát hiện, không tự chặn
+       └─ budget 1.200đ, LLM lớn nhất after 665đ; monitor chỉ phát hiện, không tự chặn
 
 ```
 
@@ -412,10 +412,10 @@ Ghi các dòng đổi sau sự cố. Mỗi dòng vẫn phải có một PIC có 
 | # nhóm | Trạng thái mới (Xong / Chưa / Không áp dụng) | Bằng chứng mới (mã lần chạy, mục phiếu, số trong report) | PIC |
 |---|---|---|---|
 | 2 · Dữ liệu | Xong (cập nhật) | C3.5: `refund_status` là bản sao trễ một đêm, sổ cái có **hai nguồn ghi** (`basis: manual` / `policy`), độ dài `text` quyết định tiền máy | Ngô Gia Bảo |
-| 4 · Quyền hạn | Chưa | Hai nơi cùng có quyền ghi khoản hoàn cho một đơn (CSKH tay và `issue_refund`) mà không khoá đơn (C4 dòng cuối); cổng R3 chặn cứng làm `S5-21@11` hoàn thiếu 12.000đ, chờ bản sửa vòng 2 và mã `S5 · after` | Lưu Văn Việt Đức |
+| 4 · Quyền hạn | Xong trong mô phỏng (còn rủi ro vận hành) | Cổng `write_gate` → `_refund_gate` (vòng 2, `730d909`) trừ tổng đã trả của mọi dòng sổ cái (cả `manual`) trước khi ghi: `R-S5-after-20261118-173334-3a9092` — `S5-21` hoàn đúng 12.000đ, `S5-02`/`S5-20` không trả thêm, hoàn sai/thiếu 0đ. Còn mở: hai nơi cùng quyền ghi mà chưa khoá đơn (C4 dòng cuối, C10) — cần quy trình khoá đơn khi CSKH hoàn tay | Lưu Văn Việt Đức |
 | 6 · Chi phí | Xong trong phạm vi pilot (độ phủ 60%) | `R-S5-before-20261118-171201-6f5ec8` → `R-S5-prepared-20261118-171202-6f5ec8`: chi phí 6.083 → 3.891đ/ticket, ROI −0,33 → 1,57, ticket tốn LLM nhiều nhất 2.412 → 664đ (trần 1.500đ), không vượt trần; kho HCM-B2B làm tay (12 ticket/ngày, ngoài phạm vi) | Ngô Gia Bảo |
-| 7 · Vận hành | Xong khi có mã after | Chỉ số mới `worst_warehouse_cost_per_ticket_vnd` đã đăng ký trong `monitors.py` (C8); Runbook 2 thêm tín hiệu chi phí theo kho và hoàn trùng (Runbook 4 dưới đây); Runbook 4–5 đã viết | Thân Đức Trung |
-| 9 · Quyết định | Chưa | Chờ C12 (v2) khớp report grade S5 và `decision_rule` đã ký | Ngô Gia Bảo |
+| 7 · Vận hành | Xong (`R-S5-grade-20261118-173333-3a9092`: `6 monitor ✅`, giá trị bộ nền 4.586đ, S5 after 4.214đ) | Chỉ số mới `worst_warehouse_cost_per_ticket_vnd` đã đăng ký trong `monitors.py` (C8); Runbook 2 thêm tín hiệu chi phí theo kho và hoàn trùng (Runbook 4 dưới đây); Runbook 4–5 đã viết | Thân Đức Trung |
+| 9 · Quyết định | Xong | C12: quyết định v2 **Tiếp tục** (4 kho đơn lẻ), khớp dòng "Tiếp tục" của `decision_rule` đã ký; report `R-S5-grade-20261118-173333-3a9092` ghi "Mọi ngưỡng đã ký đều đạt · Được phép cân nhắc Tiếp tục"; hash tiêu chí `b99cc0e4` không đổi | Ngô Gia Bảo |
 
 ### Runbook 4 · Sau sự cố trên thẻ (vòng 2)
 
@@ -447,8 +447,6 @@ Cột v1 nằm ở Phiếu B mục B8; không sửa cột đó.
 
 | | **v2** (phút 185–200, SAU sự cố) |
 |---|---|
-| | **v2** (phút 185–200, SAU sự cố) |
-|---|---|
 | Commit ký tiêu chí | `806ad8c` (giống v1) |
 | Hash chốt cổng vòng 1 | `6640aec4` (giống v1; report ghi "đã chốt `6640aec4`, còn nguyên") |
 | Mã lần chạy dùng làm bằng chứng | thẻ, mốc base: `R-S5-before-20261118-173333-3a9092` · prepared: `R-S5-prepared-20261118-173333-3a9092` · after: `R-S5-after-20261118-173334-3a9092` (cả ba từ grade `R-S5-grade-20261118-173333-3a9092`; eval riêng sau sửa: S5 `R-S5-after-20261118-173332-3a9092` 90/90, bộ nền `R-base-after-20261118-173333-3a9092` 110/110) |
@@ -467,7 +465,7 @@ Cột v1 nằm ở Phiếu B mục B8; không sửa cột đó.
 
 **Chỉ ở v2**
 - Quyết định đổi hay giữ so với v1? Vì con số nào: **Giữ Tiếp tục**, nhưng nay **hết "có điều kiện"**. *Vì sao v1 chọn Tiếp tục khi chưa đo gói sự cố:* ở phút 105–115 bằng chứng duy nhất là bộ nền prepared `R-base-prepared-20261118-164237-21c937`, nơi mọi ngưỡng đã ký đều ĐẠT và không vượt trần; theo `decision_rule` đã ký, Thu hẹp / Cải tiến thêm / Dừng đều cần một ngưỡng trượt nên không khớp. Vế "VÀ trên gói sự cố" chưa kiểm được, nên v1 ghi rõ là Tiếp tục **có điều kiện** và hẹn quyết định lại ở v2 (B8). Ở v2, vế đó đã được kiểm: gói S5 ở prepared **chưa** đạt (pass_rate/pass_k 0,9444, hoàn thiếu 60.000đ do `S5-21`), sau khi sửa R3 thì after đạt 1,0 / 1,0, hoàn sai và hoàn thiếu 0đ, ROI 1,57.
-- Report tự kiểm tra: mã lần chạy `R-S5-grade-20261118-173333-3a9092` · ô nào còn đỏ (nguyên nhân × tầng): chỉ còn `1 integrity ❌` — nguyên nhân **quy trình phát thẻ** (repo mới có gói S5, thiếu 28 file của S1–S4, S6–S8 có trong MANIFEST), **không phải file bị sửa**: 4 file S5 và mọi file khoá đang có đều khớp hash. Đang hỏi Lab Coach để nhận bộ thẻ đầy đủ rồi chạy lại `grade`. Các ô `criteria`, `visible`, `regression`, `monitor` đều ✅; `hidden` do team chấm chạy.
+- Report tự kiểm tra: mã lần chạy `R-S5-grade-20261118-173333-3a9092` · ô nào còn đỏ (nguyên nhân × tầng): chỉ còn `1 integrity ❌` — nguyên nhân **cách phát thẻ của lớp**, **không phải file bị sửa**: mỗi cặp chỉ nhận đúng thẻ của mình qua trang thẻ (cặp 7 → S5), nên repo không có 28 file của S1–S4, S6–S8 mà MANIFEST công khai liệt kê; 4 file `incidents/S5` và cả 23 file khoá đang có đều khớp hash MANIFEST. Các ô `criteria`, `visible`, `regression`, `monitor` đều ✅; `hidden` do team chấm chạy.
 - Cổng vòng 1 (mốc prepared) đã đỡ được gì trước khi bàn biết sự cố, và bỏ sót gì: **Đỡ được** cả ba triệu chứng CFO nêu ở mức tiền: kho sỉ (`pilot_scope`, đặt 16:14 trước khi có thẻ) → không còn kho đắt hơn làm tay; ticket dài (`cost_budget_per_ticket_vnd` 1.200đ) → ticket LLM đắt nhất 2.412đ → 664đ; hoàn trùng (R3) → hoàn sai 890.000đ → 0đ, lỗi oan 20 → 0. Trợ lý từ **lỗ** (ROI −0,33) sang **lời** (ROI 1,57) ngay ở prepared, và vòng 2 không phải đổi con số `business` nào. **Bỏ sót:** hoàn **một phần** hợp lệ — R3 chặn cả khoản nên `S5-21` hoàn thiếu 12.000đ × 5 seed = 60.000đ; vòng 2 sửa bằng code (TV1, `_refund_gate` tính phần còn lại). Còn tồn: ticket dài hợp lệ vẫn bị chuyển người thay vì xử lý tự động (chi phí HN 4.214đ).
 - Report ghi "được phép cân nhắc Tiếp tục" hay "không đủ căn cứ"? Quyết định của bàn có khớp không: Report after ghi **"Mọi ngưỡng đã ký đều đạt · Được phép cân nhắc 'Tiếp tục'"** → quyết định **Tiếp tục** khớp. (Bản chưa sửa `R-S5-grade-20261118-171815-6f5ec8` ghi "KHÔNG đủ căn cứ" — bàn không chọn Tiếp tục trên bản đó.)
 - Một thứ bộ thử hôm nay chưa đo, và nó ảnh hưởng quyết định ra sao: **chi phí làm tay thật của phần bị loại khỏi pilot** — report chỉ tính tiền trong phạm vi (độ phủ 0,6 trên gói S5), nên ROI 1,57 là ROI của phần pilot, chưa phải của toàn bộ CSKH; nếu kho sỉ chiếm tỉ trọng lớn hơn ngoài thực tế, lợi ích tổng nhỏ hơn con số này. Quyết định Tiếp tục vẫn đứng vì nó chỉ cam kết cho 4 kho đơn lẻ, nhưng ngày xem lại 2026-11-30 phải tính ROI trên toàn bộ ticket.

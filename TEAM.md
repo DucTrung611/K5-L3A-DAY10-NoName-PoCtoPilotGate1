@@ -24,23 +24,6 @@ Ghi `members` trong `submission/submission.json` theo dạng `"HoVaTen-MSSV"`, k
 
 Mỗi thành viên tự viết một mục bên dưới (chép mẫu, đổi tiêu đề thành họ tên không dấu và MSSV, ví dụ `## NguyenVanAn-20241234`).
 
-## HoVaTen-MSSV
-
-### Phần việc phụ trách
-
-Vai trong bàn; câu nào của đề, mục nào của phiếu A/B/C, file nào (`lab10/guards.py`, `config/operating_gates.json`, …).
-
-### Đóng góp cụ thể
-
-...
-
-### Bằng chứng
-
-Mã commit, mã lần chạy (`runs/<mã>`), dòng trong phiếu.
-
-### Exit ticket
-
-Một điều học được, một điều còn chưa chắc.
 
 ## ThanDucTrung-2A202603449
 
@@ -108,3 +91,36 @@ Dùng Codex để đọc code/tài liệu, thiết kế A2, hỗ trợ triển k
 
 - Một điều tôi học được: [tự điền].
 - Một điều tôi còn chưa chắc và cách kiểm tra: [tự điền].
+
+## NgoGiaBao-2A202603482
+
+### Phần việc phụ trách
+
+Vai **Sản phẩm và kinh doanh (TV3)**. Vòng 1: câu 1.1, 1.5 (cùng bàn), 1.6 (Phiếu A mục A1, A3, A4) và `config/acceptance_criteria.json` (Bản tiêu chí để TV2 ký); câu 2.3 (Phiếu B mục B3, bản đồ dữ liệu và ví dụ drift); câu 2.9 (`config/operating_gates.json` mục `business`, Phiếu B mục B7.4); quyết định v1 (Phiếu B mục B8). Vòng 2, thẻ S5: dòng `Thẻ đã bốc`, C3.5 (mở lại bản đồ dữ liệu), định nghĩa con số kinh doanh ở C8 (TV2 viết code), dòng kinh doanh [2], [3] của C7, quyết định v2 và ba dòng bắt buộc (C12). Ngoài ra: lập `PLAN.md` chia việc 4 người.
+
+### Đóng góp cụ thể
+
+- **Bản tiêu chí (câu 1.6):** đặt ngưỡng trước khi chạy đánh giá lần nào: `pass_rate_min` 0,97, `pass_k_min` 0,95, ba chỉ số an toàn = 0, `escalation_rate_max` 0,25, `cost_per_ticket_vnd_max` 6.000đ, `roi_min` 0,5, `queue_stuck_max` 0, `stop_condition` và 4 dòng `decision_rule`. Mỗi ngưỡng có lý do từ `ops_facts`/`ops_limits` (làm tay 10.000đ, trần LLM 1.500đ, SLA 60 phút) và nối với eval card + PRD v1.1 của tôi ở Lab 9 (siết từ `pass_rate ≥ 0,85`, `pass_5 ≥ 0,80` theo quy tắc ratchet). Không chép ngưỡng từ file example.
+- **Câu 1.1:** mục tiêu cấp hệ thống "giảm công xử lý tay mà không chuyển thiệt hại sang hãng, shop, người nhận, người duyệt", nối với PRD v1.1 §3.
+- **B3 (câu 2.3):** bản đồ dữ liệu 9 dòng, phân loại nguồn sự thật / nhập tay / bản sao (`delay_cause` nhập tay, `index_active` và `refund_status` là cờ phụ); ví dụ drift REFUND-v4 hiệu lực 2026-12-01 (quan hệ vào–ra đổi), chỉ số phát hiện.
+- **B7.4 (câu 2.9):** `daily_refund_cap_vnd` 1.000.000đ (50% ngân sách Finance), `cost_budget_per_ticket_vnd` 1.200đ (dưới trần LLM 1.500đ), `pilot_scope` 4 kho đơn lẻ HN, HCM, DN, CT — **loại kho sỉ HCM-B2B** vì đơn ≥ 2 triệu gần như luôn vượt hạn mức tự động nên chuyển người đắt hơn làm tay, `roi_min` 0,5. Quyết định này đặt ở vòng 1, **trước khi có thẻ**, và về sau đỡ được triệu chứng chính của thẻ S5.
+- **Quyết định v1 (B8):** Tiếp tục có điều kiện trên bộ nền prepared (mọi ngưỡng đã ký đạt), ghi rõ vế "trên gói sự cố" chưa kiểm được và hẹn quyết định lại ở v2.
+- **Vòng 2, thẻ S5 (CFO: mỗi ticket đắt hơn làm tay):** phân tích gói thẻ thành ba dòng tiền (kho sỉ luôn chuyển người, ticket dài vượt trần LLM, hoàn trùng do CSKH và trợ lý cùng ghi sổ); C3.5 với 4 trường mới (`warehouse_id`, độ dài chữ ticket, `refund_status`, cột `basis` của sổ cái); định nghĩa monitor `worst_warehouse_cost_per_ticket_vnd` (tiền máy + công người + tiền nghi mất, theo kho, không dùng nhãn); dòng [2], [3] của C7; gộp xung đột C7 giữ nguyên dòng [1] của TV1.
+- **Quyết định v2 (C12):** **Tiếp tục** trong 4 kho đơn lẻ, khớp dòng "Tiếp tục" đã ký trên cả bộ nền và gói S5; trả lời câu CFO hỏi: trợ lý từ lỗ (ROI −0,33) sang lời (ROI 1,57), phần lỗ là kho sỉ và đã giữ làm tay. Soạn ba dòng bắt buộc (dòng 1 dùng câu 3.3 của TV4).
+- Soát chéo: phát hiện và báo lỗi xuống dòng CRLF làm 19 file khoá lệch hash trên Windows (sửa bằng `core.autocrlf false`); xác nhận config và guards trong repo trùng bản TV2 đã đo trước khi checkpoint.
+
+### Bằng chứng
+
+- Commit: `a325964`, `4260c97` (tiêu chí + Phiếu A) · `806e5d8` (B3, B7.4, mục `business`) · `0f568c3` (B8 v1) · `701e2c6` (Phiếu C: thẻ S5, C3.5, C8) · `dc61472` (C7 dòng [2], [3]) · `d5f3bdb` (C12 v2, ba dòng bắt buộc) · `73e6cc1`, `d15a6c5` (`PLAN.md`) · `dedf62a` (`TEAM.md`). Commit ký tiêu chí do TV2 chạy: `806ad8c`.
+- Mã lần chạy dùng cho quyết định: bộ nền base `R-base-before-20261118-154917-611de4`, prepared `R-base-prepared-20261118-164237-21c937`; S5 grade sau sửa `R-S5-grade-20261118-173333-3a9092` (base `R-S5-before-20261118-173333-3a9092`, prepared `R-S5-prepared-20261118-173333-3a9092`, after `R-S5-after-20261118-173334-3a9092`).
+- Dòng trong phiếu: Phiếu A mục A1 (1.1), A3, A4; Phiếu B mục B3, B7.4, B8; Phiếu C đầu phiếu, C3.5, C7 dòng [2]–[3], C8, C12.
+- Danh tính Git dùng MSSV trưởng nhóm theo README bước 2b; MSSV cá nhân là **2A202603482**.
+
+### Sử dụng AI
+
+Dùng Claude Code để đọc tài liệu đề, `data/world.json`, code `lab10/` (`criteria.py`, `gate.py`, `ops.py`, `agent.py`) và tài liệu Lab 9 của tôi; soạn nháp Phiếu A, B3, B7.4, B8, C3.5, C7, C8, C12; kiểm config bằng `lab10.ops.problems`, kiểm hash file khoá và chạy git. Mọi ngưỡng, con số trong `business` và hai quyết định v1/v2 do tôi chọn và giải thích được lúc demo. Không dùng AI viết code xử lý theo mã ticket.
+
+### Exit ticket
+
+- Một điều tôi học được: Đặt tiêu chí chấp nhận (acceptance criteria) và ký khoá **trước** khi chạy đánh giá là bước quan trọng nhất để tránh thiên lệch xác nhận — nếu nhìn số trước rồi mới chọn ngưỡng thì Gate 1 mất ý nghĩa. Thực tế trong lab, việc ký trước buộc tôi phải lý giải mỗi ngưỡng bằng dữ kiện (`ops_facts`, `ops_limits`, ratchet từ Lab 9) thay vì chọn con số "vừa đủ qua".
+- Một điều tôi còn chưa chắc: ROI 1,57 chỉ tính trên 4 kho đơn lẻ trong phạm vi pilot (60% gói S5); tôi chưa chắc cách tính ROI toàn bộ CSKH khi kho sỉ HCM-B2B vẫn làm tay — nếu tỉ trọng kho sỉ ngoài thực tế lớn hơn trong bộ thử, lợi ích tổng có thể thấp hơn nhiều so với con số pilot. Cách kiểm tra: thu thập phân bổ ticket thật theo kho trong tuần pilot đầu tiên, tính ROI trên toàn bộ ticket (bao gồm phần làm tay) và so với ngưỡng 0,5 đã ký.
