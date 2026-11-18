@@ -410,20 +410,20 @@ bao nhiêu thời gian? (3) Có phần nào của dự án không nên làm ti�
 |---|---|
 | Commit ký tiêu chí (message `Sign acceptance criteria`; hash commit, tuỳ chọn) | `806ad8c` |
 | Hash chốt cổng vòng 1 (8 ký tự lệnh `lab10.checkpoint` in ra, tuỳ chọn) | `6640aec4` (đã verify) |
-| Mã lần chạy dùng làm bằng chứng | base: `R-base-before-20261118-154917-611de4` · prepared: `R-base-prepared-20261118-164237-21c937` |
+| Mã lần chạy dùng làm bằng chứng | bộ nền, mốc base: `R-base-before-20261118-154917-611de4` · bộ nền với cổng vòng 1 (prepared): `R-base-prepared-20261118-164237-21c937` |
 | Còn dòng "vượt trần" nào trong report? (hàng chờ, chi phí, ROI, trần tiền, pháp lý) | Không trên bộ nền prepared; mọi ngưỡng đã ký đạt. Chưa có kết quả gói sự cố ở thời điểm chốt này |
-| Kho hoặc hãng có số xấu nhất: ____. Nếu chỉ nhìn phân khúc này, quyết định có đổi không? *(Đọc khối "theo kho và hãng" ở cuối output `lab10.eval` / `lab10.grade`, hoặc mục `by_segment` trong `report.json`.)* | |
-| Quyết định (khoanh một) | Chờ TV3/cả nhóm xác nhận quyết định v1; TV2 chỉ bàn giao bằng chứng |
+| Kho hoặc hãng có số xấu nhất: **kho DN** (chi phí 4.586đ/ticket, cao nhất trong các kho thật). Nếu chỉ nhìn phân khúc này, quyết định có đổi không? *(Đọc khối "theo kho và hãng" ở cuối output `lab10.eval` / `lab10.grade`, hoặc mục `by_segment` trong `report.json`.)* | Ở mốc prepared mọi kho và hãng đều pass_rate 1,0, không hoàn sai, không lỗi hãng oan, không lộ PII. Xấu nhất về **chi phí**: nhóm `?` (ticket trỏ tới đơn không tồn tại, `T-018`) 10.359đ/ticket > làm tay 10.000đ — nhưng đó là 1 ticket/ngày mà trợ lý chuyển người **đúng** (đơn không có thật), không phải một kho; trong kho thật, **DN** đắt nhất 4.586đ/ticket, vẫn dưới ngưỡng đã ký 6.000đ và dưới làm tay. **Quyết định không đổi** nếu chỉ nhìn phân khúc này; DN là kho cần theo dõi chi phí đầu tiên trong pilot. |
+| Quyết định (khoanh một) | **Tiếp tục** (trong phạm vi đã đặt ở B7.4: 4 kho đơn lẻ HN, HCM, DN, CT; kho sỉ HCM-B2B vẫn làm tay), **có điều kiện**: phải được xác nhận lại trên gói sự cố ở v2 |
 | Bằng chứng 1: mã lần chạy + chỉ số bắt buộc nào đạt / chưa | `R-base-prepared-20261118-164237-21c937`: pass_rate/pass_k = 1,0; CI95 [1,0;1,0]; 110/110 đạt |
 | Bằng chứng 2 | Cùng report prepared: hoàn sai 0đ; lỗi hãng oan 0; PII 0; không ca mới hỏng so baseline |
 | Bằng chứng 3 | Cùng report prepared: chi phí 4.202đ/ticket, ROI 1,38; ca ùn 0, coverage 100%, chuyển người 0,2273 |
-| Khớp dòng nào trong `decision_rule` đã ký? | |
-| Nếu Thu hẹp: cắt phần nào, vì sao | |
-| Nếu Cải tiến thêm: giả thuyết cụ thể + hạn | |
-| Nếu Dừng: bài học ghi lại | |
+| Khớp dòng nào trong `decision_rule` đã ký? | Dòng **"Tiếp tục"**: mọi ngưỡng `required` (pass_rate 1,0 ≥ 0,97; pass_k 1,0 ≥ 0,95; hoàn sai 0đ; lỗi hãng oan 0; lộ dữ liệu 0) và mọi ngưỡng `business_ops` (chi phí 4.202đ ≤ 6.000đ; ROI 1,38 ≥ 0,5; ca ùn 0) đều ĐẠT và report ghi "vượt trần: không" — **trên bộ nền**. Vế "VÀ trên gói sự cố" của dòng này **chưa kiểm được** ở v1 (chưa nhận thẻ), nên v1 chỉ là Tiếp tục có điều kiện; nếu ở v2 gói sự cố làm trượt ngưỡng nào thì áp dụng dòng Thu hẹp / Cải tiến thêm / Dừng tương ứng. |
+| Nếu Thu hẹp: cắt phần nào, vì sao | (không áp dụng ở v1) Phạm vi đã đặt từ vòng 1 không phải Thu hẹp do trượt ngưỡng: kho sỉ HCM-B2B được loại vì lý do kinh doanh (đơn ≥ 2 triệu gần như luôn vượt hạn mức tự động 200.000đ, chuyển người thì đắt hơn làm tay; B7.4, HAZOP B4) |
+| Nếu Cải tiến thêm: giả thuyết cụ thể + hạn | (không áp dụng ở v1) |
+| Nếu Dừng: bài học ghi lại | (không áp dụng ở v1) |
 | Một bằng chứng còn thiếu (thứ bộ nền chưa đo được) | Thẻ sự cố S5, test ẩn, tracking sai và tải production thật; chưa thể suy từ 110 lượt mock sang toàn bộ pilot |
-| Ngày quyết định lại (trừ khi Dừng) | |
-| PIC ký | |
+| Ngày quyết định lại (trừ khi Dừng) | **2026-11-18, cuối khối 3** (quyết định v2, sau khi chạy `lab10.grade` trên thẻ sự cố); xem lại cả Bản tiêu chí ngày **2026-11-30**, trước khi REFUND-v4 hiệu lực 2026-12-01 (Phiếu A, A4 bước 3) |
+| PIC ký | Ngô Gia Bảo (TV3, Sản phẩm và kinh doanh), thay mặt bàn NoName; cả bàn xác nhận |
 
 Xong v1 thì lưu và đẩy một bản (sau mốc này không sửa cột v1):
 
