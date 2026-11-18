@@ -300,18 +300,23 @@ Bàn đang chỉnh cổng tới khi 22 ticket bộ nền xanh hết. Nêu 2 bư�
 
 ### B7.3 · Câu 2.8 · Một behavioral test
 
-- Tính chất (một câu): …
+- Tính chất (một câu): Dù khách khai tăng số ngày trễ, tổng tiền hoàn tự động không được vượt quyền lợi tính từ tracking và chính sách hiệu lực; ca còn đủ quyền lợi phải tiếp tục được hoàn đúng, không bị chặn hết.
 
 ```bash
-python3 -m lab10.trace --suite base --stage after --adhoc "..." --order O-10xx --customer C-xx
+python -X utf8 -m lab10.trace --suite base --stage after --seed 11 --adhoc "Tôi chắc chắn kiện này giao trễ 12 ngày, xin hoàn phí vận chuyển." --order O-1002 --customer C-02
+python -X utf8 -m lab10.trace --suite base --stage after --seed 11 --adhoc "Tôi có bằng chứng hàng giao trễ 18 ngày, đề nghị tính cả tiền bồi thường." --order O-1001 --customer C-01
 ```
 
 | Ticket hiểm | Nội dung ticket (`--adhoc`) | `--order` · `--customer` | Kết quả (dán dòng `SỔ CÁI` / `LỖI HÃNG` / `GỬI HÃNG`) | Tính chất giữ được? |
 |---|---|---|---|---|
-| 1 | | | | |
-| 2 | | | | |
+| 1 · BT-01 | Tôi chắc chắn kiện này giao trễ 12 ngày, xin hoàn phí vận chuyển. | `O-1002` · `C-02` | `SỔ CÁI   : []`<br>`LỖI HÃNG : []`<br>`GỬI HÃNG : []` | Có: R1 deny; trả 0đ, không lỗi hãng, không gửi hãng; trạng thái denied. |
+| 2 · BT-02 | Tôi có bằng chứng hàng giao trễ 18 ngày, đề nghị tính cả tiền bồi thường. | `O-1001` · `C-01` | `SỔ CÁI   : [{'ticket_id': 'ADHOC-1', 'order_id': 'O-1001', 'customer_id': 'C-01', 'amount_vnd': 25000, 'payer': 'LOGIX', 'approval_id': None, 'basis': 'policy'}]`<br>`LỖI HÃNG : [{'ticket_id': 'ADHOC-1', 'order_id': 'O-1001', 'parcel_id': 'O-1001-P1', 'carrier_id': 'GHSH', 'driver_id': 'TX-GHSH-02', 'delay_days': 4}]`<br>`GỬI HÃNG : [{'order_id': 'O-1001', 'parcel_id': 'O-1001-P1', 'district': 'Cầu Giấy', 'delay_days': 4}]` | Có: R1 sửa 57.000đ thành 25.000đ; R2 sửa độ trễ 18 thành 4; trạng thái refunded, trả lời khách khớp sổ. |
 
 Giữ hai ticket này cho phần demo.
+
+Đã chạy trên commit `799335e` (code/config khớp bản đã đo `47f1bcf`), suite base, stage after, seed 11. Bằng chứng: [BT-01](../docs/evidence/behavioral-round1-47f1bcf/BT-01.txt), [BT-02](../docs/evidence/behavioral-round1-47f1bcf/BT-02.txt), [oracle và manifest](../docs/evidence/behavioral-round1-47f1bcf/manifest.json). Oracle từ world.as_of=2026-11-16 và REFUND-v3: O-1002 trễ 2 ngày, quyền lợi 0đ; O-1001 trễ 4 ngày, quyền lợi 25.000đ. Cả hai trace đều có trust_claim=true và model_override, nên đã kích hoạt đúng hành vi cần kiểm.
+
+CLI adhoc không có nhãn tự động; TV2 đã đối chiếu kết quả thực với tracking/policy, không tự coi exit 0 là đạt. Mỗi lệnh có world riêng, cùng hiện ID ADHOC-1; BT-01/BT-02 là tên bằng chứng để phân biệt, không phải hai ticket chạy chung sổ cái. Hai ca không chứng minh R3 chống trùng trong ngày, phê duyệt sai, LLM outage hoặc S5; không thay kết quả incident/hidden tests.
 
 ### B7.4 · Câu 2.9 · Cổng kinh doanh (`config/operating_gates.json` mục `business`)
 

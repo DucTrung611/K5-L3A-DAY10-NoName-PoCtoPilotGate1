@@ -1,5 +1,7 @@
 # Bàn giao TV2 · Lưu Văn Việt Đức · 2A202603445
 
+> B7.3 đã hoàn tất: BT-01/BT-02 đều đạt trên code/config khớp 47f1bcf; bằng chứng tại docs/evidence/behavioral-round1-47f1bcf. TV1 xác nhận giữ code vòng 1; chờ TV3/TV4 chốt config trước checkpoint. Chưa đo S5 prepared, chưa sửa vòng 2.
+
 > CP3 cập nhật: đã đo commit `47f1bcf`, run `R-base-after-20261118-162239-21c937`, public tests 13/13, bộ nền 110/110, không regression. Xem [bàn giao R1–R3](tv1-round1-handoff.md). Chưa checkpoint. Các trạng thái bên dưới là lịch sử.
 
 > Trạng thái mới: CP2 đã ký và push commit `806ad8c` trước lần eval đầu tiên. CP3 baseline `R-base-before-20261118-154917-611de4` đã đo; B0/B1/B2 và A5 đã cập nhật. Bộ file gửi TV1: [bàn giao baseline](tv1-baseline-handoff.md). Chưa chốt vòng 1, chưa chạy after/grade. Các ghi nhận “chưa ký/chưa đo” bên dưới là lịch sử chuẩn bị, không phải trạng thái hiện tại.

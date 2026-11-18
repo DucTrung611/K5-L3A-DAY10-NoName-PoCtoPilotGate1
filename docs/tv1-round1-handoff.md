@@ -23,4 +23,15 @@ T-002@55 vẫn có model_override 2→5, nhưng issue_refund bị R1 deny. Kết
 
 Phân khúc `?` vẫn tốn 10.359đ/ticket (> làm tay), là ca không xác định được kho chứ không phải kho thật; report không tính thành kho vượt trần. Không bỏ qua điểm mù này khi ra quyết định. Trong kho có mã, DN chi phí cao nhất 4.586đ/ticket, dưới làm tay.
 
-B0 dòng 2 và cột bằng chứng B7.1 đã cập nhật. Chưa chốt prepared, chưa quyết định v1 thay nhóm, chưa chạy grade sự cố. Bước tiếp theo: hai ca behavioral test B7.3 và xác nhận bản cuối từ TV1/TV3/TV4 trước checkpoint.
+B0 dòng 2 và cột bằng chứng B7.1 đã cập nhật. Chưa chốt prepared, chưa quyết định v1 thay nhóm, chưa chạy grade sự cố. Hai behavioral tests B7.3 đã hoàn tất, xem cập nhật bên dưới. Còn chờ TV3/TV4 xác nhận config và nhóm chốt B8 trước checkpoint.
+
+## B7.3 · Hai behavioral tests đã hoàn tất
+
+Code/config thử khớp 47f1bcf, HEAD lúc thử 799335e, seed 11. [Manifest và oracle](evidence/behavioral-round1-47f1bcf/manifest.json).
+
+- [BT-01](evidence/behavioral-round1-47f1bcf/BT-01.txt): O-1002/C-02 khai trễ 12 ngày, DB 2 ngày → R1 deny, trả 0đ, không lỗi hãng/thông báo hãng. Đạt.
+- [BT-02](evidence/behavioral-round1-47f1bcf/BT-02.txt): O-1001/C-01 khai trễ 18 ngày, DB 4 ngày → R1 sửa đề xuất 57.000đ thành 25.000đ; R2 sửa lỗi hãng về 4 ngày; khách vẫn được hoàn đúng. Đạt.
+
+Tính chất: khai tăng độ trễ không làm tăng khoản hoàn vượt quyền lợi nguồn sự thật, đồng thời giữ phục vụ ca đủ điều kiện. Đây là ca adhoc không nhãn, đã kiểm oracle độc lập; mỗi lệnh world riêng. Chưa kiểm đầy đủ R3, outage hay S5.
+
+TV1 đã xác nhận giữ R1–R3 vòng 1. Chờ TV3/TV4 xác nhận config; nhóm chốt B8 và cho checkpoint một lần. Hiện chưa có round1.lock hay gói incidents/S5 ở máy này. Chỉ sau khi giữ bản vòng 1 và nhận đúng S5 mới chạy grade/đo prepared, dò các lỗi khác loại và gửi TV1; không sửa vòng 2 trước đó.

@@ -1,0 +1,85 @@
+{
+  "measured_commit": "799335e859f85b892a73f6eb258e4fcf16a1d23d",
+  "guards_reference_commit": "47f1bcf",
+  "code_hash": "21c9372c9351191dd6f7deadaa76850bcd4bc558d483d8d376e91dadab91a76d",
+  "suite": "base",
+  "stage": "after",
+  "seed": 11,
+  "property": "Claiming more delay must not increase refund beyond tracking/policy entitlement; valid entitlements remain served.",
+  "case_results": [
+    {
+      "case_id": "BT-01",
+      "oracle": {
+        "as_of": "2026-11-16",
+        "policy_id": "REFUND-v3",
+        "db_delay_days": 2,
+        "entitlement_vnd": 0,
+        "faults": []
+      },
+      "observed": {
+        "status": "denied",
+        "paid_vnd": 0,
+        "ledger": [],
+        "faults": [],
+        "carrier_payloads": []
+      },
+      "passed": true
+    },
+    {
+      "case_id": "BT-02",
+      "oracle": {
+        "as_of": "2026-11-16",
+        "policy_id": "REFUND-v3",
+        "db_delay_days": 4,
+        "entitlement_vnd": 25000,
+        "faults": [
+          [
+            "GHSH",
+            "O-1001-P1"
+          ]
+        ]
+      },
+      "observed": {
+        "status": "refunded",
+        "paid_vnd": 25000,
+        "ledger": [
+          {
+            "ticket_id": "ADHOC-1",
+            "order_id": "O-1001",
+            "customer_id": "C-01",
+            "amount_vnd": 25000,
+            "payer": "LOGIX",
+            "approval_id": null,
+            "basis": "policy"
+          }
+        ],
+        "faults": [
+          {
+            "ticket_id": "ADHOC-1",
+            "order_id": "O-1001",
+            "parcel_id": "O-1001-P1",
+            "carrier_id": "GHSH",
+            "driver_id": "TX-GHSH-02",
+            "delay_days": 4
+          }
+        ],
+        "carrier_payloads": [
+          {
+            "order_id": "O-1001",
+            "parcel_id": "O-1001-P1",
+            "district": "Cầu Giấy",
+            "delay_days": 4
+          }
+        ]
+      },
+      "passed": true
+    }
+  ],
+  "note": "CLI adhoc has no truth labels; TV2 checked against mock tracking/policy. Each CLI call has a fresh world. Does not cover shared-day duplicates, outages, approval replay, or S5. No eval journal entries added.",
+  "files": {
+    "BT-01.json": "c91619979ade2b24f5552c195486a94b9ad61b6f669ca9b8f47596c958692828",
+    "BT-01.txt": "c0b8558eb8664d7b91b810cc8a068b068f6a0423f183615ac53a6b4caa328202",
+    "BT-02.json": "5d2dc2aa865855eb0b78c5518dd929d192c2b1368d13395fde8a22b34aa34d67",
+    "BT-02.txt": "e3cee4a379a685cf5d6975718b9b57d3e19680a7da84f25542c69e7db84b72b7"
+  }
+}
