@@ -50,6 +50,7 @@ Trưởng nhóm; vai **Vận hành và pháp lý (TV4)**. Câu 1.2, 1.4 (Phiếu
 - Dòng trong phiếu: Phiếu A mục A1 câu 1.2, A2 cột Telemetry; Phiếu B mục B4, B5, B6, B7.5, B7.6; Phiếu C mục C1, C4, C5 (câu 3.3), C10, C11.
 - Trace dùng cho Phiếu C (lệnh `lab10.trace`, không ghi nhật ký): `S5-01`, `S5-02`, `S5-03`, `S5-20`, `S5-21`, `S5-51`, `S5-70` @ seed 11, mốc base và prepared.
 - **Dùng AI:** dùng Claude Code để đọc `data/world.json`, `lab10/agent.py`, `ops.py`, `tools.py`, soạn nháp các phần trên và kiểm config bằng `lab10.ops.problems` + public tests (`Ran 13 tests … OK`). Mọi con số và tên người do tôi chọn và giải thích được lúc demo; không dùng AI để viết code xử lý theo mã ticket.
+- **Dùng AI (bổ sung, Antigravity/Gemini):** dùng thêm Antigravity (Gemini) trong session nộp bài để: (1) khôi phục CRLF→LF cho `acceptance_criteria.json`, `guards_round1.py`, `operating_gates.round1.json`, `round1.lock`, `acceptance_criteria.lock` (5 file, nội dung không đổi); (2) chạy `lab10.grade --incident S5` và `lab10.check_submission --collect` trên máy trưởng nhóm (thay TV2 vì nhật ký máy TV2 không còn trong session này); (3) soạn bản nháp mục `NguyenBaThanh-2A202609499` trong TEAM.md (Thành cần xác nhận); (4) soạn tờ Q&A demo. Mọi quyết định, con số và bằng chứng lấy từ `docs/evidence/` và report vừa chạy; không bịa số liệu.
 
 ### Exit ticket
 
@@ -124,3 +125,39 @@ Dùng Claude Code để đọc tài liệu đề, `data/world.json`, code `lab10
 
 - Một điều tôi học được: Đặt tiêu chí chấp nhận (acceptance criteria) và ký khoá **trước** khi chạy đánh giá là bước quan trọng nhất để tránh thiên lệch xác nhận — nếu nhìn số trước rồi mới chọn ngưỡng thì Gate 1 mất ý nghĩa. Thực tế trong lab, việc ký trước buộc tôi phải lý giải mỗi ngưỡng bằng dữ kiện (`ops_facts`, `ops_limits`, ratchet từ Lab 9) thay vì chọn con số "vừa đủ qua".
 - Một điều tôi còn chưa chắc: ROI 1,57 chỉ tính trên 4 kho đơn lẻ trong phạm vi pilot (60% gói S5); tôi chưa chắc cách tính ROI toàn bộ CSKH khi kho sỉ HCM-B2B vẫn làm tay — nếu tỉ trọng kho sỉ ngoài thực tế lớn hơn trong bộ thử, lợi ích tổng có thể thấp hơn nhiều so với con số pilot. Cách kiểm tra: thu thập phân bổ ticket thật theo kho trong tuần pilot đầu tiên, tính ROI trên toàn bộ ticket (bao gồm phần làm tay) và so với ngưỡng 0,5 đã ký.
+
+## NguyenBaThanh-2A202609499
+
+> **[BẢN NHÁP — do trưởng nhóm soạn dựa trên docs/tv2-worklog.md vì máy chính của Thành không còn hoạt động trong session này. Thành cần đọc, chỉnh sửa và tự commit mục này trước deadline.]**
+
+### Phần việc phụ trách
+
+Vai **TV2 — Kỹ sư cổng: đánh giá và giám sát (máy chính)**. Giữ máy chạy mọi lệnh ghi nhật ký: `lab10.criteria sign`, `lab10.eval`, `lab10.gate`, `lab10.checkpoint`, `lab10.grade`, `lab10.check_submission`. Phụ trách B0, B1, B2, B7.3, C0, C2, C5 (specification), C6 (fault tree trước), C8 (monitor), C9 (fault tree sau).
+
+### Đóng góp cụ thể
+
+- **Ký tiêu chí (phút 60–65):** pull bản tiêu chí TV3 đã điền, chạy `lab10.criteria sign`, commit `806ad8c` ("Sign acceptance criteria"), push — đảm bảo ký trước lần eval đầu tiên.
+- **Baseline (B0 dòng 1, B1, B2):** `R-base-before-20261118-154917-611de4`; phát hiện T-002@55 hoàn sai 20.000đ, 1 lỗi hãng oan VNX; bàn giao cho TV1 và TV4.
+- **Đo cổng vòng 1 (B0 dòng 2):** `R-base-after-20261118-162239-21c937` tại commit `47f1bcf`; 110/110 đạt, không ca mới hỏng.
+- **Checkpoint vòng 1 (B0 dòng 3):** `python -m lab10.checkpoint` tại commit `a49cb34`, hash `6640aec4`, taken_at `2026-11-18T16:42:37`; `R-base-prepared-20261118-164237-21c937` 110/110; commit `e230d3c`.
+- **Behavioral test B7.3:** BT-01 (từ chối khoản hoàn không đủ điều kiện), BT-02 (sửa 57.000đ → 25.000đ, độ trễ 18 → 4 ngày); bằng chứng tại `docs/evidence/behavioral-round1-47f1bcf/`.
+- **Monitor C8:** triển khai `worst_warehouse_cost_per_ticket_vnd` theo định nghĩa TV3 tại commit `701e2c6`; phân biệt bộ nền (4.586đ) với gói S5 before (20.263đ).
+- **Vòng 2, grade S5:** `R-S5-grade-20261118-173333-3a9092` — visible/regression/monitor đạt; integrity thiếu 28 file thẻ khác (do cách phát thẻ); bằng chứng tại `docs/evidence/R-S5-grade-20261118-173333-3a9092/`.
+
+### Bằng chứng
+
+- Commit ký tiêu chí: `806ad8c` · checkpoint: `a49cb34` (hash `6640aec4`) · monitor: `701e2c6`.
+- Mã lần chạy chính: baseline `R-base-before-20261118-154917-611de4` · after `R-base-after-20261118-162239-21c937` · prepared `R-base-prepared-20261118-164237-21c937` · S5 grade `R-S5-grade-20261118-173333-3a9092`.
+- Bằng chứng lưu tại: `docs/evidence/` (không lên git nhật ký `runs/`, chỉ lưu bản sao trong `docs/evidence/`).
+- Danh tính Git dùng MSSV trưởng nhóm theo README; MSSV cá nhân: **2A202609499**.
+
+### Sử dụng AI
+
+[Thành tự điền — ghi đúng công cụ AI đã dùng và phạm vi: đọc code, soạn nháp hay chạy lệnh; không ghi thay trải nghiệm học tập.]
+
+### Exit ticket
+
+[Thành tự viết — không thay bằng trải nghiệm do AI suy đoán.]
+
+- Một điều tôi học được: [tự điền]
+- Một điều tôi còn chưa chắc: [tự điền]
