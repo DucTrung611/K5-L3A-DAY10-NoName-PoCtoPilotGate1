@@ -295,8 +295,8 @@ python3 -m unittest discover -s tests
 Bàn đang chỉnh cổng tới khi 22 ticket bộ nền xanh hết. Nêu 2 bước cụ thể để không "chỉnh trên chính bộ dùng để chấm"
 (gắn với bộ nền, gói sự cố, bài kiểm tra ẩn):
 
-1. …
-2. …
+1. Xem bộ nền và các ca adhoc đã dùng để phân tích, chỉnh hoặc kiểm cổng (gồm BT-01/BT-02 ở B7.3) là **dữ liệu phát triển**, không phải bằng chứng tổng quát hóa độc lập. Kiểm theo tính chất nghiệp vụ: số tiền/lỗi hãng phải khớp tracking và chính sách, đồng thời giữ ca hợp lệ; không hard-code ID ticket, đơn, khách, seed hay câu chữ cụ thể trong cổng.
+2. Giữ nguyên snapshot vòng 1 tại checkpoint `6640aec4` (`lab10/guards_round1.py`, `config/operating_gates.round1.json`, `config/round1.lock`) để TV2 đo và đối chiếu **S5/prepared trước sửa vòng 2**. Hiện chưa có bằng chứng S5/prepared trong repo được kiểm tra; không suy ra nhóm chưa từng xem S5 hay khẳng định thời điểm xem thẻ. Khi S5 được dùng để phân tích và chỉnh cổng, ghi rõ đây là bộ đã xem; mỗi lần sửa kiểm lại S5 và bộ nền, giữ test ẩn độc lập do team chấm chạy, không tìm/đọc hoặc chỉnh theo test ẩn. Kết quả base/prepared đã có không thay thế S5/prepared.
 
 ### B7.3 · Câu 2.8 · Một behavioral test
 
