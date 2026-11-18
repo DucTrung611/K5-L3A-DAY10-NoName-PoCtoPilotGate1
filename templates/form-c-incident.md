@@ -1,6 +1,6 @@
 # Phiếu C · Sự cố và quyết định v2 · Khối 3 (phút 125–200)
 
-**Bàn:** ______ · **Thẻ đã bốc:** ___ *(để trống tới phút 125; bốc số xong thì ghi đúng số đó, ví dụ `S3`. Lab Coach đối chiếu với sổ; lệnh tự kiểm tra in dòng này trong report.)*
+**Bàn:** K5-L3A-DAY10-NoName-PoCtoPilotGate1 · **Thẻ đã bốc:** S5 *(để trống tới phút 125; bốc số xong thì ghi đúng số đó, ví dụ `S3`. Lab Coach đối chiếu với sổ; lệnh tự kiểm tra in dòng này trong report.)*
 
 Mở `incidents/Sx/card.md` của đúng số đã bốc. Các bước trên thẻ trỏ về đúng mục trong phiếu này. Mục C3 chỉ điền phần ứng với
 số thẻ của bàn; các phần khác để trống.
@@ -220,8 +220,10 @@ Mở lại Phiếu B mục B3. Ghi ở đây những dòng đổi so với vòng
 
 | Trường / bảng | Vòng 1 bàn đã coi là (nguồn sự thật / bản sao / chưa hỏi) | Sau khi đọc thẻ thì thấy | Ảnh hưởng tới tiền hay lỗi hãng thế nào |
 |---|---|---|---|
-| | | | |
-| | | | |
+| `orders[].warehouse_id` | **Chưa hỏi** trong B3 (không nằm trong danh sách trường then chốt); chỉ dùng ở B7.4 để đặt `pilot_scope` | Là trường **quyết định chi phí và khả năng tự động hoá**: 12/30 ticket của gói S5 thuộc kho sỉ HCM-B2B (`S5-50`…`S5-61`), nhãn đều `escalated`. Đơn sỉ 2,2–2,35 triệu (O-2550, O-2551) trễ 7–8 ngày → quyền lợi = phí ship 30.000đ + thưởng 10% giá trị (trần 200.000đ) = 230.000đ > hạn mức tự động 200.000đ của REFUND-v3 → luôn phải chuyển người | Không đổi tiền hoàn, nhưng đổi **chi phí**: mỗi ticket kho sỉ trả cả tiền máy lẫn 10.000đ công duyệt → đắt hơn làm tay 10.000đ (triệu chứng 1 của CFO). Đã được cổng vòng 1 `pilot_scope` loại trừ (B7.4) |
+| Chữ khách viết trong ticket (độ dài `text`) | **Không coi là trường then chốt**; B3 chỉ coi chữ khách là "không phải nguồn sự thật" về số ngày trễ | Độ dài chữ là **trường quyết định tiền máy**: tiền đọc = 150đ + 1đ/4 ký tự (`ops_facts.llm_cost`). Ticket có dán thêm danh sách hàng dài 5.000–7.400 ký tự (`S5-70` 5.473, `S5-73` 6.865, `S5-76` 6.407 ký tự, đều là đơn lẻ kho HN, nhãn `refunded`; cùng kiểu ở 6 ticket kho sỉ) → riêng phần đọc + phí nền đã ≈ 1.700–2.100đ/ticket | Vượt trần LLM 1.500đ/ticket đã thống nhất với Ops/Finance (triệu chứng 2 của CFO). Cổng vòng 1 `cost_budget_per_ticket_vnd = 1.200` chặn được phần vượt trần nhưng đẩy ticket hợp lệ sang người → thêm công duyệt, khách chờ |
+| `orders[].refund_status` | **Bản sao** (cờ do batch đêm làm mới từ sổ cái, trễ tới 1 ngày) — đã ghi ở B3 | Xác nhận đúng và **nặng hơn dự đoán**: O-2520 đã được CSKH hoàn tay 20.000đ (dòng `T-CSKH-2520` trong `ledger_seed`) nhưng cờ vẫn là `NONE`; trong cùng một ngày, khách gửi lại 2–3 ticket cho một đơn (`S5-01`→`S5-02`→`S5-03` đơn O-2501; `S5-04`→`S5-05` đơn O-2502) | Nếu agent tin cờ này → **hoàn hai, ba lần** cho một đơn = tiền mất thật, không thu hồi được (triệu chứng 3 của CFO). Nguồn sự thật cho "đã trả bao nhiêu" phải là sổ cái, không phải cờ |
+| Sổ cái (`ledger_seed` + dòng mới), cột `basis` | **Chưa hỏi** về thứ bậc: B3 coi sổ cái chỉ là đầu ra của trợ lý | Có **hai hệ thống cùng ghi sổ**: CSKH hoàn tay (`basis: manual`, `T-CSKH-2520`, `T-CSKH-2521`) và trợ lý (`basis: policy`). O-2521 đã được hoàn tay 10.000đ trên quyền lợi 22.000đ → lần sau chỉ được hoàn phần còn lại 12.000đ (`S5-21`) | Trợ lý phải đọc **tổng đã trả của cả hai nguồn** trước khi ghi: bỏ qua dòng tay → hoàn trùng; chặn cứng cả đơn → khách bị hoàn thiếu 12.000đ. Kế toán (chị Oanh) cần cột `basis` để đối soát |
 
 ---
 
@@ -330,14 +332,14 @@ Thẻ S5 dùng mục này cho một con số kinh doanh: chi phí mỗi ticket t
 
 | | Chỉ số theo dõi mới của bàn |
 |---|---|
-| **Tên trong `MONITORS`** | |
-| **Bước / hành vi được đo** | |
-| **Thước đo** (một câu, có đơn vị) | |
-| **Dữ liệu** (trường nào của trial, không có nhãn) | |
-| **Cách tính** (công thức, mẫu số, cách xử lý ca thiếu dữ liệu) | |
-| **Khung thời gian / ngưỡng báo động** | |
-| **Điểm mù** (chỉ số này KHÔNG thấy gì) | |
-| Giá trị trên bộ nền · trên thẻ (đọc mục `monitor` của report) | |
+| **Tên trong `MONITORS`** | `worst_warehouse_cost_per_ticket_vnd` (TV3 định nghĩa, TV2 viết hàm trong `lab10/monitors.py`) |
+| **Bước / hành vi được đo** | Cả luồng xử lý ticket, nhìn theo **túi tiền**: mỗi ticket trợ lý nhận tốn bao nhiêu, tách theo kho. Không đo đúng/sai của từng quyết định |
+| **Thước đo** (một câu, có đơn vị) | Chi phí trung bình mỗi ticket của **kho đắt nhất** trong một ngày vận hành, gồm tiền máy + công người + tiền nghi mất do hoàn trùng, đơn vị đ/ticket; so với làm tay 10.000đ/ticket |
+| **Dữ liệu** (trường nào của trial, không có nhãn) | Mỗi trial: `warehouse` (kho của đơn), `cost_vnd` (tiền LLM + nền tảng), `review_kind` (`None` / `"escalated"` / `"recheck"`), `ledger` (dòng hoàn trợ lý đã ghi, có `order_id`, `amount_vnd`), `seed`, `day` (các ticket cùng `seed` và `day` chạy nối nhau trên cùng một sổ). Đơn giá công người lấy từ `data/world.json` → `ops_facts`: `review_cost_per_ticket_vnd` = 10.000đ, kiểm lại có ghi chú = 0,4 ca. Không dùng `label`, `pass` |
+| **Cách tính** (công thức, mẫu số, cách xử lý ca thiếu dữ liệu) | Với mỗi kho `w` (bỏ trial có `warehouse` rỗng: ticket trỏ tới đơn không tồn tại, không thuộc kho nào): (1) **tiền máy** = Σ `cost_vnd`; (2) **công người** = 10.000đ × số trial `review_kind = "escalated"` + 4.000đ × số trial `review_kind = "recheck"`; (3) **tiền nghi mất** = Σ `amount_vnd` của các dòng hoàn có `order_id` **đã có dòng hoàn trước đó trong cùng (`seed`, `day`)**; chi phí kho `w` = (1)+(2)+(3) chia cho số trial của kho `w`. Giá trị monitor = **max** theo kho. Không có trial nào có kho → trả 0 |
+| **Khung thời gian / ngưỡng báo động** | Tính theo ngày vận hành, đăng `#logix-refund-pilot-alert`. **VÀNG**: > 6.000đ/ticket (ngưỡng đã ký `cost_per_ticket_vnd_max`) → TV3/NV-TUNG xem kho nào, dòng tiền nào tăng. **ĐỎ**: > 10.000đ/ticket (đắt hơn làm tay) → cắt kho đó khỏi `business.pilot_scope`, ticket kho đó làm tay; ĐỎ ba ngày liên tiếp ở mức toàn bộ → điều kiện dừng số 6 |
+| **Điểm mù** (chỉ số này KHÔNG thấy gì) | (a) **Hoàn trùng với dòng CSKH ghi tay** (`ledger_seed`, `basis: manual`) không nằm trong `ledger` của trial nên không cộng vào "tiền nghi mất"; (b) hoàn trùng **khác ngày** (khách gửi lại hôm sau) không thấy vì chỉ so trong cùng `day`; (c) "tiền nghi mất" là ước lượng không nhãn: một đơn hoàn hai lần **hợp lệ** (hoàn bổ sung phần còn thiếu) cũng bị cộng vào; (d) chỉ thấy ticket **trong phạm vi pilot** — kho đã bị cắt (HCM-B2B) không còn trong số liệu, phải đọc riêng chi phí làm tay của kho đó; (e) không thấy chi phí ngoài mô hình (thời gian chờ của khách, phí giữ chỗ người trực tính chung cho cả ca) |
+| Giá trị trên bộ nền · trên thẻ (đọc mục `monitor` của report) | *(điền sau khi TV2 chạy `python -m lab10.grade --incident S5` có monitor mới: giá trị bộ nền · gói S5 ở mốc after; monitor phải cho hai giá trị khác nhau để `6 monitor ✅`)* |
 
 ---
 
