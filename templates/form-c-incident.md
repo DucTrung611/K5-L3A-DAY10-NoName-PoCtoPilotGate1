@@ -33,7 +33,9 @@ Mỗi lệnh `lab10.eval` và `lab10.grade` tự ghi một dòng vào `runs/jour
 | 1 | `R-S5-prepared-20261118-171202-6f5ec8` (grade `R-S5-grade-20261118-171201-6f5ec8`) | S5 · prepared | Nhận S5; guards/config vòng 1 giữ nguyên, monitor C8 đã có trước khi nhận gói | 0,9444 [0,8333;1,0] | 0,9444 | 0 · 0 · 0 | 0,1667 | 85/90 đạt; S5-21 hỏng cả 5 seed; coverage 60%; còn hoàn thiếu |
 | 2 | `R-S5-after-20261118-171202-6f5ec8` | S5 · after | Bản hiện tại tại lần grade đầu, CHƯA sửa guards/config vòng 2 | 0,9444 [0,8333;1,0] | 0,9444 | 0 · 0 · 0 | 0,1667 | Giống prepared; chưa ghi nhận cải thiện vòng 2 |
 | 3 | `R-S5-after-20261118-171815-6f5ec8` (grade `R-S5-grade-20261118-171815-6f5ec8`) | S5 · after | Chạy lại theo yêu cầu, KHÔNG thay guards/config | 0,9444 [0,8333;1,0] | 0,9444 | 0 · 0 · 0 | 0,1667 | Không cải thiện: S5-21 vẫn thiếu 12.000đ/seed; integrity thiếu 28 file gói khác |
-| 4 | | base · after | (kiểm không regression) | | | | | |
+| 4 | `R-base-after-20261118-173333-3a9092` | base · after | Kiểm regression sau code 730d909, đo HEAD 67509f4 | 1,0 [1,0;1,0] | 1,0 | 0 · 0 · 0 | 0,2273 | 110/110 đạt, coverage 100%, không ca mới hỏng |
+| 5 | `R-S5-after-20261118-173332-3a9092` | S5 · after | R3 vòng 2 tính quyền lợi còn lại và đối soát reply (730d909); config không đổi | 1,0 [1,0;1,0] | 1,0 | 0 · 0 · 0 | 0,1667 | 90/90 đạt, hoàn thiếu 0, coverage 60% |
+| 6 | `R-S5-after-20261118-173334-3a9092` (grade `R-S5-grade-20261118-173333-3a9092`) | S5 · after | Grade sau hai eval trên, cùng code/config | 1,0 [1,0;1,0] | 1,0 | 0 · 0 · 0 | 0,1667 | visible/regression/monitor/criteria đạt; tổng FAIL vì thiếu 28 file thẻ khác |
 
 ---
 
@@ -355,29 +357,34 @@ Thẻ S5 dùng mục này cho một con số kinh doanh: chi phí mỗi ticket t
 | **Cách tính** (công thức, mẫu số, cách xử lý ca thiếu dữ liệu) | Với mỗi kho `w` (bỏ trial có `warehouse` rỗng: ticket trỏ tới đơn không tồn tại, không thuộc kho nào): (1) **tiền máy** = Σ `cost_vnd`; (2) **công người** = 10.000đ × số trial `review_kind = "escalated"` + 4.000đ × số trial `review_kind = "recheck"`; (3) **tiền nghi mất** = Σ `amount_vnd` của các dòng hoàn có `order_id` **đã có dòng hoàn trước đó trong cùng (`seed`, `day`)**; chi phí kho `w` = (1)+(2)+(3) chia cho số trial của kho `w`. Giá trị monitor = **max** theo kho. Không có trial nào có kho → trả 0. Bỏ cả mã `?` không xác định kho; thiếu `cost_vnd` tính 0, `review_kind` không có/khác hai loại trên không cộng công người. Thiếu `seed` hoặc `day` chỉ kiểm lặp trong chính trial đó, không gộp các trial thiếu ngữ cảnh; dòng ledger thiếu `order_id` không dùng phát hiện lặp, thiếu `amount_vnd` tính 0. Trial phải theo thứ tự xử lý trong mỗi ngày/seed |
 | **Khung thời gian / ngưỡng báo động** | Tính theo ngày vận hành, đăng `#logix-refund-pilot-alert`. **VÀNG**: > 6.000đ/ticket (ngưỡng đã ký `cost_per_ticket_vnd_max`) → TV3/NV-TUNG xem kho nào, dòng tiền nào tăng. **ĐỎ**: > 10.000đ/ticket (đắt hơn làm tay) → cắt kho đó khỏi `business.pilot_scope`, ticket kho đó làm tay; ĐỎ ba ngày liên tiếp ở mức toàn bộ → điều kiện dừng số 6 |
 | **Điểm mù** (chỉ số này KHÔNG thấy gì) | (a) **Hoàn trùng với dòng CSKH ghi tay** (`ledger_seed`, `basis: manual`) không nằm trong `ledger` của trial nên không cộng vào "tiền nghi mất"; (b) hoàn trùng **khác ngày** (khách gửi lại hôm sau) không thấy vì chỉ so trong cùng `day`; (c) "tiền nghi mất" là ước lượng không nhãn: một đơn hoàn hai lần **hợp lệ** (hoàn bổ sung phần còn thiếu) cũng bị cộng vào; (d) chỉ thấy ticket **trong phạm vi pilot** — kho đã bị cắt (HCM-B2B) không còn trong số liệu, phải đọc riêng chi phí làm tay của kho đó; (e) không thấy chi phí ngoài mô hình (thời gian chờ của khách, phí giữ chỗ người trực tính chung cho cả ca); (f) công recheck luôn dùng giả định có ghi chú = 0,4 ca theo C8, dù report có thể tính 1 ca khi không có ghi chú hoặc thiếu lòng tin; đây là proxy, không phải chi phí kế toán thực tế. Đơn giá đọc từ world.json nền, không tự áp dụng thay đổi đơn giá trong world_patch của thẻ |
-| Giá trị trên bộ nền · trên thẻ (đọc mục `monitor` của report) | Grade `R-S5-grade-20261118-171201-6f5ec8`: before bộ nền **4.586,4**, S5 **20.262,6**; after bộ nền **4.586,4**, S5 **4.214,25** đ/ticket. `monitor ok=true`, không lỗi. After ở đây chưa sửa guards/config vòng 2 và giống prepared; giá trị giảm phần lớn do scope loại kho và chống lặp. Đây là proxy gồm tiền nghi mất, khác chi phí kế toán trong report |
+| Giá trị trên bộ nền · trên thẻ (đọc mục `monitor` của report) | Grade mới `R-S5-grade-20261118-173333-3a9092`: after bộ nền **4.586,4**, S5 **4.214,25** đ/ticket; monitor đạt, không lỗi. Before S5 **20.262,6**. Mốc prepared S5 **4.214,25** dù còn hoàn thiếu, cho thấy monitor C8 không phát hiện lỗi hoàn thiếu; phải đọc thêm under_refund_vnd và trace |
 
 ---
 
+
 <a id="c9"></a>
 
-## C9 · Câu 3.7 · Fault tree SAU khi sửa (mã lần chạy: `__________`)
+## C9 · Câu 3.7 · Fault tree SAU khi sửa (mã lần chạy: `R-S5-grade-20261118-173333-3a9092`)
 
 Vẽ lại cây ở C6. Ở mỗi nhánh đã xử lý, thêm một nút `VÀ [gate … hỏng]` và ghi:
 
 ```
-[ĐỈNH] ______________________________
+[ĐỈNH] Pilot gây thiệt hại tài chính hoặc không đạt ngưỡng Gate 1
  └─ HOẶC
- ├─ [1] ______________ VÀ [gate ______ hỏng]
- ├─ [2] ______________ VÀ [gate ______ hỏng]
- └─ [3] ______________ (còn hở?)
+    ├─ [1] Hoàn trùng/thiếu VÀ [_refund_gate tính quyền lợi còn lại hoặc kiểm ledger hỏng]
+    │  └─ S5-21 after trả 12.000đ; S5-02 và S5-20 không trả thêm; reply khớp khoản mới
+    ├─ [2] AI đọc rồi vẫn duyệt tay ở kho sỉ VÀ [pilot_scope cho kho không có lời vào lại]
+    │  └─ HCM-B2B ngoài scope; 12 ticket/ngày vẫn làm tay, chưa chứng minh AI có lời ở kho này
+    └─ [3] Nội dung dài VÀ [budget trước đọc hỏng hoặc chi phí duyệt làm tổng vượt ngưỡng]
+       └─ budget 1.200đ, LLM lớn nhất after 664đ; monitor chỉ phát hiện, không tự chặn
+
 ```
 
 | Nhánh | Gate (hàm trong `guards.py` / khoá config / metric trong `monitors.py`) | Tầng gate (phát hiện / chặn / giới hạn thiệt hại / vận hành) | Giảm hay ngăn? Vì sao | Nhánh còn hở |
 |---|---|---|---|---|
-| [1] | | | | |
-| [2] | | | | |
-| [3] | | | | |
+| [1] | _refund_gate: remaining = entitlement - paid; _blocked_refund_reply; C8 chỉ theo dõi nghi trùng | Chặn/điều chỉnh lệnh ghi, giải thích cho người | Ngăn lỗi đã tái hiện trong mô phỏng tuần tự: S5-21 trả 12.000đ, toàn S5 hoàn sai/thiếu 0 | Ledger sai, ghi tay đồng thời, race giữa kiểm và ghi; monitor không thấy ledger_seed và hoàn thiếu |
+| [2] | business.pilot_scope và báo cáo chi phí theo kho | Vận hành/giới hạn phạm vi | Giới hạn tác hại trong pilot; giảm coverage còn 60%, không tự động hóa kho sỉ | Phần ngoài scope vẫn tốn công tay; drift cơ cấu ticket hoặc mở lại HCM-B2B |
+| [3] | business.cost_budget_per_ticket_vnd=1200; worst_warehouse_cost_per_ticket_vnd | Giới hạn chi phí và phát hiện | Giảm rủi ro; chuyển người trước đọc ticket dài, report after không vượt trần | Công người, phát sinh gọi khác, giá LLM đổi; recheck proxy giả định 0,4 ca có thể thấp hơn thực |
 
 ---
 

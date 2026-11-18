@@ -1,5 +1,7 @@
 # S5 · Bàn giao prepared cho TV1 · chưa sửa vòng 2
 
+> Đã có bản sửa R3 vòng 2 và kết quả mới: [bàn giao sau sửa](s5-round2-handoff.md). Những lỗi còn lại và kết luận FAIL vì visible bên dưới là lịch sử trước sửa; bản mới visible đã đạt, vẫn còn vấn đề integrity bộ phát.
+
 > Lần grade mới nhất theo yêu cầu: `R-S5-grade-20261118-171815-6f5ec8`, đo commit `3a2acdc`; [report](evidence/R-S5-grade-20261118-171815-6f5ec8/grade-report.json). Kết quả không đổi vì chưa sửa guards/config: visible và integrity chưa đạt, criteria/regression/monitor đạt. Đây là chạy lại, không phải cải tiến vòng 2. Các số chi tiết bên dưới thuộc lần đo đầu để giữ nguồn bằng chứng.
 
 - Commit đã đo: `5d9cc814cd8cf802e8105ceb93bad4edd4295818`; code/config vòng 1 khớp bản đóng băng hash `6640aec4`.
