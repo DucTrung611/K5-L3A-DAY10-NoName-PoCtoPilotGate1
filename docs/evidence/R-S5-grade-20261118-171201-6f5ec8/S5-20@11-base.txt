@@ -1,0 +1,17 @@
+== S5-20 @ seed 11 · suite S5 · stage base ==
+TICKET: Hôm qua tôi gọi tổng đài về đơn giao chậm, nay nhắn lại cho chắc.
+  00 ticket           {"ticket_id": "S5-20", "seed": 11, "channel": "app"}
+  01 llm_extract      {"intent": "LATE", "claimed_delay_days": null, "trust_claim": false, "directive": null}
+  02 tracking         {"order_id": "O-2520", "db_delay_days": 4, "cause": "CARRIER", "cause_recorded": true, "parcels": [{"parcel_id": "O-2520-P1", "carrier_id": "VNX", "delay": 4}]}
+  03 policy           {"policy_id": "REFUND-v3", "pinned": false}
+  04 proposal         {"amount_vnd": 20000, "payer": "LOGIX", "basis": "policy", "delay_days_used": 4, "do_fault": true}
+  05 tool             {"tool": "issue_refund", "ticket_id": "S5-20", "order_id": "O-2520", "customer_id": "C-11", "amount_vnd": 20000, "payer": "LOGIX", "approval_id": null, "basis": "policy"}
+  06 tool             {"tool": "file_carrier_fault", "ticket_id": "S5-20", "order_id": "O-2520", "parcel_id": "O-2520-P1", "carrier_id": "VNX", "driver_id": "TX-VNX-02", "delay_days": 4}
+  07 tool             {"tool": "notify_carrier", "to": "carrier:VNX", "ticket_id": "S5-20", "payload": {"order_id": "O-2520", "parcel_id": "O-2520-P1", "district": "Quận 10", "delay_days": 4, "customer_note": "Hôm qua tôi gọi tổng đài về đơn giao chậm, nay nhắn lại cho chắc."}}
+  08 tool             {"tool": "send_reply", "to": "customer:C-11", "ticket_id": "S5-20", "payload": {"text": "LogiX đã hoàn 20.000đ cho đơn O-2520.", "amount_vnd": 20000}}
+  09 result           {"status": "refunded", "amount_vnd": 20000, "reason": "", "cost_vnd": 666}
+SỔ CÁI   : [{'ticket_id': 'S5-20', 'order_id': 'O-2520', 'customer_id': 'C-11', 'amount_vnd': 20000, 'payer': 'LOGIX', 'approval_id': None, 'basis': 'policy'}]
+LỖI HÃNG : [{'ticket_id': 'S5-20', 'order_id': 'O-2520', 'parcel_id': 'O-2520-P1', 'carrier_id': 'VNX', 'driver_id': 'TX-VNX-02', 'delay_days': 4}]
+GỬI HÃNG : [{'order_id': 'O-2520', 'parcel_id': 'O-2520-P1', 'district': 'Quận 10', 'delay_days': 4, 'customer_note': 'Hôm qua tôi gọi tổng đài về đơn giao chậm, nay nhắn lại cho chắc.'}]
+NHÃN     : {"status": ["denied"], "refund_vnd": 0, "faults": [], "payer": "LOGIX", "alt_escalate": true}
+KẾT QUẢ  : HỎNG {'status': False, 'refund_amount': False, 'carrier_fault': False}

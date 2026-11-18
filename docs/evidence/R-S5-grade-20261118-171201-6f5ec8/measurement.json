@@ -1,0 +1,7 @@
+{
+  "measured_commit": "5d9cc814cd8cf802e8105ceb93bad4edd4295818",
+  "grade_run_id": "R-S5-grade-20261118-171201-6f5ec8",
+  "code_hash": "6f5ec800caaaf183b7b539503ded1dd6cbef8d8f55743fb6e0bc2ce467499f14",
+  "round1_hash": "6640aec48afba7939f8bb13832cc80ef78f11e0fc897150c2b8972e6d487724c",
+  "note": "First S5 grade on receipt; round1 guards/config unchanged; C8 monitor already implemented before pack arrived."
+}
