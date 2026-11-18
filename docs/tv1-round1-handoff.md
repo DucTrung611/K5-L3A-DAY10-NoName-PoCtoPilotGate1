@@ -42,3 +42,10 @@ TV1 đã xác nhận giữ R1–R3 vòng 1. Chờ TV3/TV4 xác nhận config; nh
 - Hash `6640aec4`, taken_at `2026-11-18T16:42:37` (giờ máy). Giữ nguyên guards_round1.py, operating_gates.round1.json, round1.lock.
 - Base/prepared: `R-base-prepared-20261118-164237-21c937`, 110/110 đạt; mọi ngưỡng ký đạt, không regression; [report](evidence/R-base-prepared-20261118-164237-21c937/report.json).
 - Đã bổ sung bằng chứng B8; quyết định v1/PIC vẫn chờ nhóm xác nhận, không tự gán. Người dùng xác nhận Coach đã phát thẻ; sẽ nhận đúng S5 sau khi push bản chốt.
+
+
+## Kiểm tra nguồn phát S5 sau checkpoint
+
+Đã thêm upstream đúng URL README và fetch (chỉ đọc nguồn, chưa merge). Tại commit upstream `a9d9b1d6148ad89d7c089385fa107edde59e1cbc`, `git ls-tree -r --name-only upstream/main -- incidents` chỉ trả `incidents/README.md`; chưa có S5 hoặc incident-cards.md. Vì vậy chưa chạy S5/grade và chưa có trace lỗi sự cố. Cần Coach cung cấp đúng repo/nhánh/gói phát thẻ. B8 vẫn cần quyết định v1 và PIC từ nhóm.
+
+Lần gọi thêm remote kèm merge toàn repo ban đầu bị bộ duyệt tự động từ chối do rủi ro gộp lịch sử độc lập; sau khi xác minh URL bằng README và ls-remote, bước thêm/fetch riêng đã được duyệt. Không thực hiện merge hoặc nhập gói không có trong nguồn.

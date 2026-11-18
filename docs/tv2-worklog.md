@@ -1,5 +1,7 @@
 # Bàn giao TV2 · Lưu Văn Việt Đức · 2A202603445
 
+> Cập nhật CP3: checkpoint `6640aec4`, commit `a49cb34`, prepared `R-base-prepared-20261118-164237-21c937` đạt 110/110. CP4 chưa đo được vì upstream/main a9d9b1d chưa có S5. Giữ nguyên code vòng 1; chờ nguồn thẻ và quyết định v1 của nhóm.
+
 > B7.3 đã hoàn tất: BT-01/BT-02 đều đạt trên code/config khớp 47f1bcf; bằng chứng tại docs/evidence/behavioral-round1-47f1bcf. TV1 xác nhận giữ code vòng 1; chờ TV3/TV4 chốt config trước checkpoint. Chưa đo S5 prepared, chưa sửa vòng 2.
 
 > CP3 cập nhật: đã đo commit `47f1bcf`, run `R-base-after-20261118-162239-21c937`, public tests 13/13, bộ nền 110/110, không regression. Xem [bàn giao R1–R3](tv1-round1-handoff.md). Chưa checkpoint. Các trạng thái bên dưới là lịch sử.
