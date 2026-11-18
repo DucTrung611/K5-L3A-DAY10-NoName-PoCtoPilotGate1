@@ -50,12 +50,12 @@ trợ lý có đang gây thiệt hại cho bên ngoài LogiX không; không có 
 
 | | Offline, cho MỘT bước (câu 1.3) | Telemetry production (câu 1.4) |
 |---|---|---|
-| **Bước / hành vi được đo** | | |
-| **Thước đo** (một câu, có đơn vị) | | |
-| **Dữ liệu** (lấy ở đâu, bao nhiêu, ai gán nhãn) | | |
-| **Cách tính** (công thức, mẫu số, cách xử lý ca thiếu dữ liệu) | | |
+| **Bước / hành vi được đo** | Chọn phiên bản chính sách tại bước 3 của `lab10/agent.py:run_ticket`, thể hiện bằng sự kiện `type="policy"`; không đo bước LLM `policy_check` hay toàn bộ kết quả xử lý ticket. | |
+| **Thước đo** (một câu, có đơn vị) | Tỉ lệ lần chọn sai `policy_id` so với phiên bản duy nhất có hiệu lực tại ngày giả lập của lần chạy, đơn vị % trên các lần chạy đánh giá được ở bước chọn chính sách; thấp hơn là tốt hơn. | |
+| **Dữ liệu** (lấy ở đâu, bao nhiêu, ai gán nhãn) | Sau khi TV2 ký, commit và push tiêu chí, dự kiến dùng bộ nền 22 ticket × 5 seed (`11,22,33,44,55`), tối đa 110 trace `runs/<mã>/traces/<ticket_id>@<seed>.json`; đọc `ticket_id`, `seed`, `events` và `policy_id` của sự kiện `policy`. Nhãn tham chiếu lấy từ `data/world.json` đúng phiên bản của lần chạy: `as_of`, `policies[].policy_id`, `effective_from`, `effective_to`; không lấy `index_active` làm nhãn. TV1 dự kiến lập nhãn theo khoảng ngày, TV2 kiểm chéo trước khi đối chiếu đầu ra agent; chưa thống nhất thì ghi chưa có nhãn. Bộ nền hiện có `as_of=2026-11-16`, khớp duy nhất `REFUND-v3` (dữ kiện tĩnh, chưa phải kết quả đo). | |
+| **Cách tính** (công thức, mẫu số, cách xử lý ca thiếu dữ liệu) | Nhãn đúng là chính sách duy nhất thỏa `effective_from <= as_of <= effective_to` (biên bao gồm; `effective_to=null` là không có ngày kết thúc). Gọi N là số lần chạy có trace đầy đủ, đúng một sự kiện `policy` và nhãn tham chiếu duy nhất; E là số lần trong N có `policy_id` khác nhãn (sự kiện thiếu `policy_id` cũng tính sai). Tỉ lệ sai = `100 × E / N` (%); N=0 ghi N/A. Trace đầy đủ nhưng không tới sự kiện `policy` đếm riêng là chưa tới bước, không tính đúng. Trace thiếu/hỏng, nhiều sự kiện `policy`, thiếu ngày, không có hoặc có nhiều chính sách cùng hiệu lực, hay nhãn chưa thống nhất: đếm riêng là không đánh giá được, không gán là đúng. Khi báo cáo phải ghi E, N, hai nhóm loại trừ và tổng số lần dự kiến để thấy độ phủ; chưa có mã lần chạy nên chưa điền giá trị. | |
 | **Khung thời gian / ngưỡng báo động** | (không áp dụng) | |
-| **Điểm mù** (thước đo này KHÔNG thấy gì) | | |
+| **Điểm mù** (thước đo này KHÔNG thấy gì) | Không thấy bảng chính sách/ngày giả lập tự sai; không đo chọn kiện, độ trễ, nguyên nhân, quyền lợi, phê duyệt, ghi tiền, lỗi hãng hay dữ liệu gửi ra. Cùng một `policy_id` vẫn có thể bị tính tiền sai. Bộ nền hiện chỉ ở ngày 2026-11-16 nên chưa chứng minh đúng qua ngày đổi chính sách 2026-12-01; các lần chưa tới bước hoặc thiếu dữ liệu phải đọc cùng tỉ lệ sai. | |
 
 **Ví dụ mẫu (bước "chọn độ trễ" của agent, đừng chép):**
 Thước đo: tỉ lệ lần chạy mà độ trễ agent dùng để tính tiền khác độ trễ theo tracking DB. Dữ liệu: sự kiện `proposal.delay_days_used`
