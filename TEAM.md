@@ -126,7 +126,6 @@ Dùng Claude Code để đọc tài liệu đề, `data/world.json`, code `lab10
 
 ## NguyenBaThanh-2A202609499
 
-> **[BẢN NHÁP — do trưởng nhóm soạn dựa trên docs/tv2-worklog.md vì máy chính của Thành không còn hoạt động trong session này. Thành cần đọc, chỉnh sửa và tự commit mục này trước deadline.]**
 
 ### Phần việc phụ trách
 
