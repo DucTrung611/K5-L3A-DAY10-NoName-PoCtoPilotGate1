@@ -123,24 +123,24 @@ Gợi ý: mở `data/world.json` phần `policies`, `orders[].parcels`, `ops_lim
 
 | Mục | Điền cho trợ lý hoàn tiền |
 |---|---|
-| Người dùng | |
-| Việc người dùng cần làm xong | |
-| Đầu ra của hệ thống (kể cả các lệnh ghi) | |
-| Dữ liệu trợ lý đọc lúc chạy (bảng nào trong `data/world.json`) | |
-| Trường then chốt quyết định tiền và lỗi hãng | |
-| Với mỗi trường then chốt: **nguồn sự thật** hay **bản sao** (ai cập nhật, khi nào)? | |
-| Định dạng cần để ý (ngày, trường được phép trống, đơn nhiều kiện) | |
-| Thế giới thật làm dữ liệu lệch ở đâu (theo mùa, đổi chính sách, giờ cao điểm, người nhập tay)? | |
-| Câu người ngoài sẽ hỏi về nguồn dữ liệu ("sao hệ thống biết đơn trễ mấy ngày?") | |
+| Người dùng | Trực tiếp: khách đặt hàng gửi ticket hoàn tiền giao trễ qua app/chat. Gián tiếp (chạm vào kết quả mà không dùng trợ lý): chị Hạnh `NV-HANH` duyệt ca chuyển sang, chị Oanh `NV-OANH` đối soát sổ với hãng và shop, hãng vận chuyển (GHSH, VNX, MKD, DNB, LGX) bị ghi lỗi, người nhận quà |
+| Việc người dùng cần làm xong | Khách: được hoàn đúng số tiền theo chính sách đang hiệu lực, nhanh, không phải chứng minh lại. Chị Hạnh: chỉ nhận ca thật sự cần người, kèm đủ căn cứ. Chị Oanh: mỗi dòng sổ và mỗi lỗi hãng khớp tracking để đối soát tuần không phải sửa tay |
+| Đầu ra của hệ thống (kể cả các lệnh ghi) | 4 lệnh ghi: `issue_refund` (dòng sổ cái, tiền đã đi), `file_carrier_fault` (lỗi hãng → hãng bị phạt 80.000–150.000đ/lỗi, có thể bị treo), `notify_carrier` (thông báo gửi ra bên thứ ba), `send_reply` (câu trả lời khách, số tiền phải khớp sổ); cộng quyết định chuyển người (`escalated`) |
+| Dữ liệu trợ lý đọc lúc chạy (bảng nào trong `data/world.json`) | Chữ khách viết trong ticket; `orders` (khách, kho, `goods_value_vnd`, `shipping_fee_vnd`, `is_gift`, `recipient`, `parcels[]`, `refund_status`, `checkout_note`); `policies`; `approvals`; sổ cái (`ledger_seed` + dòng mới); `carriers`; `ops_limits` |
+| Trường then chốt quyết định tiền và lỗi hãng | `parcels[].promised_date`, `parcels[].delivered_date` (→ số ngày trễ); `parcels[].delay_cause` (→ có hoàn không, có ghi lỗi hãng không); `parcels[].carrier_id` (→ hãng nào bị phạt); `shipping_fee_vnd`, `goods_value_vnd` (→ số tiền); `policies[].late.*`, `auto_limit_vnd`, `fault_causes`, `effective_from`/`effective_to` (→ quy tắc áp dụng); `approvals[]` (→ được hoàn vượt hạn mức hay không) |
+| Với mỗi trường then chốt: **nguồn sự thật** hay **bản sao** (ai cập nhật, khi nào)? | **Nguồn sự thật:** `promised_date` (hệ thống đặt hàng ghi lúc tạo đơn); `delivered_date` (sự kiện quét giao ở điểm phát); `shipping_fee_vnd`, `goods_value_vnd` (đơn hàng lúc thanh toán); `effective_from`/`effective_to` (văn bản chính sách Product/Pháp chế ban hành); `approvals` (chị Hạnh tạo, có `status`, `expires_at`). **Nhập tay, dễ sai:** `delay_cause` (điểm phát/hãng chọn lý do, có thể để trống). **Bản sao / cờ phụ:** `policies[].index_active` (cờ người bật tay, có thể lệch với khoảng ngày hiệu lực — agent lại đọc cờ này); `orders[].refund_status` (cờ do batch đêm làm mới từ sổ cái, trễ tới 1 ngày). **Không phải nguồn sự thật:** số ngày trễ khách tự khai trong ticket, lời dặn trong `checkout_note` |
+| Định dạng cần để ý (ngày, trường được phép trống, đơn nhiều kiện) | Ngày ISO `YYYY-MM-DD`, so với `as_of` (2026-11-16); `delivered_date = null` khi chưa giao (O-1011, O-1014) → trễ tính tới hôm nay; `delay_cause = null` ở O-1010, O-1012, O-1023, O-1025 (agent hiện coi trống là lỗi hãng); đơn nhiều kiện khác hãng (O-1013: GHSH + LGX) → phải ghi lỗi đúng kiện trễ; `effective_to = null` = chưa hết hạn; ticket trỏ tới đơn không tồn tại (O-9999); tiền là số nguyên VNĐ |
+| Thế giới thật làm dữ liệu lệch ở đâu (theo mùa, đổi chính sách, giờ cao điểm, người nhập tay)? | (1) **Đổi chính sách** 2026-12-01 (REFUND-v4) trong khi cờ `index_active` do người lật tay; (2) **mùa mưa bão** miền Trung/miền Tây → nhiều `FORCE_MAJEURE`, và từ v4 bão không còn ghi lỗi hãng; (3) **cao điểm sale 12/12, Tết** → lượng ticket gấp 3, điểm phát quét bù/nhập tay `delivered_date`, `delay_cause` muộn hoặc trống; (4) **batch đêm** làm `refund_status` trễ nên khách gửi lại ticket trong ngày có thể được hoàn lần hai |
+| Câu người ngoài sẽ hỏi về nguồn dữ liệu ("sao hệ thống biết đơn trễ mấy ngày?") | "Số ngày trễ lấy từ tracking: ngày giao quét ở điểm phát trừ ngày hẹn giao lúc đặt hàng (chưa giao thì tính tới hôm nay), **không** lấy số khách tự khai." Và: "Sao biết lỗi do hãng?" → từ `delay_cause` trong tracking, chỉ khi thuộc `fault_causes` của chính sách đang hiệu lực; trống thì không được tự gán cho hãng |
 
 **Tóm lại (điền vào chỗ trống):**
-Trợ lý dùng `__________`, `__________`, `__________` để giúp `__________` làm được `__________`.
-Trường mà nếu sai thì tiền hoặc lỗi hãng sai theo: `__________`, `__________`.
-Chúng tôi biết thế giới thật sẽ làm dữ liệu lệch ở: `__________`. Dấu hiệu nhìn thấy sớm nhất: `__________`.
+Trợ lý dùng `tracking của từng kiện (parcels[])`, `chính sách hoàn tiền đang hiệu lực (policies)`, `phê duyệt còn hạn (approvals)` để giúp `khách bị giao trễ` làm được `việc nhận đúng khoản hoàn mà không cần nhân viên CSKH xử lý tay, trong khi hãng chỉ bị ghi lỗi khi tracking chứng minh`.
+Trường mà nếu sai thì tiền hoặc lỗi hãng sai theo: `parcels[].delivered_date / promised_date (số ngày trễ)`, `parcels[].delay_cause (có hoàn, có ghi lỗi hãng)`.
+Chúng tôi biết thế giới thật sẽ làm dữ liệu lệch ở: `ngày đổi chính sách 2026-12-01 và mùa mưa bão / cao điểm cuối năm, khi điểm phát nhập tay delay_cause`. Dấu hiệu nhìn thấy sớm nhất: `sự kiện policy trong trace có policy_id khác chính sách có hiệu lực theo ngày (thước đo offline câu 1.3 của TV1), và tỉ lệ kiện có delay_cause trống tăng`.
 
-**Ví dụ drift trong 3 tháng tới** (lấy từ dòng "thế giới thật làm dữ liệu lệch"): cái gì đổi `____` · đổi ngày nào `____` ·
-trường nào cho thấy `____` · con số nào của Bản tiêu chí bị ảnh hưởng `____`.
-Đây là đầu vào đổi hay quan hệ vào–ra đổi? Chỉ số nào sẽ phát hiện? `__________`
+**Ví dụ drift trong 3 tháng tới** (lấy từ dòng "thế giới thật làm dữ liệu lệch"): cái gì đổi `chính sách REFUND-v3 → REFUND-v4: hoàn phí từ trễ 2 ngày (trước 3), thưởng từ 5 ngày (trước 7), trần thưởng 300.000đ (trước 200.000đ), hạn mức tự động 100.000đ (trước 200.000đ), FORCE_MAJEURE bỏ khỏi fault_causes` · đổi ngày nào `2026-12-01` ·
+trường nào cho thấy `policies[].effective_from / effective_to, policies[].index_active (agent đọc cờ này, không đọc ngày), sự kiện policy.policy_id trong trace` · con số nào của Bản tiêu chí bị ảnh hưởng `wrongful_refund_vnd_max = 0 (đơn trễ 2 ngày bị từ chối sai, thưởng tính sai), wrongful_carrier_faults_max = 0 (đơn trễ do bão vẫn bị ghi lỗi hãng nếu còn dùng v3), escalation_rate_max = 0,25 và queue_stuck_max = 0 (hạn mức tự động hạ còn 100.000đ → nhiều ca chuyển người hơn), cost_per_ticket_vnd_max = 6.000đ`.
+Đây là đầu vào đổi hay quan hệ vào–ra đổi? Chỉ số nào sẽ phát hiện? `Chủ yếu là quan hệ vào–ra đổi (concept drift): cùng một đơn trễ 2 ngày, cùng delay_cause FORCE_MAJEURE, nhưng đầu ra đúng (số tiền, có ghi lỗi hãng không) đã khác. Mùa bão còn kèm đầu vào đổi (tỉ lệ FORCE_MAJEURE tăng). Phát hiện bằng: tỉ lệ chọn sai policy_id (câu 1.3, TV1) — báo ngay từ ticket đầu tiên sau 2026-12-01; escalation_rate và tỉ lệ khoản hoàn chạm auto_limit_vnd tăng; telemetry câu 1.4 (lỗi hãng không khớp tracking) cho phía hãng. Ngày xem lại tiêu chí 2026-11-30 đặt ngay trước mốc này.`
 
 **Ví dụ một dòng (đừng chép):** trường then chốt `parcels[].delivered_date` · bản ghi do máy quét ở điểm phát tạo ra, là nguồn
 sự thật về ngày giao · lệch khi điểm phát quét sót hoặc nhập bù bằng tay.
@@ -318,10 +318,10 @@ Mỗi con số kèm một câu lý do, lấy từ `data/world.json` → `ops_lim
 
 | Khoá | Giá trị bàn đặt | Lý do (một câu, có số) |
 |---|---|---|
-| `business.daily_refund_cap_vnd` | | |
-| `business.cost_budget_per_ticket_vnd` | | |
-| `business.pilot_scope` (all / warehouse / percent) | | |
-| `business.roi_min` | | |
+| `business.daily_refund_cap_vnd` | `1000000` | Bằng 50% ngân sách hoàn tự động Finance cho phép (`ops_limits.daily_auto_refund_budget_vnd` = 2.000.000đ): ngày hoàn nhiều nhất ở mốc base là 155.000đ (`R-base-before-20261118-154917-611de4`), nên trần này vẫn chứa được ngày cao điểm gấp 3 (≈ 465.000đ) mà không chặn khoản hợp lệ, đồng thời giữ thiệt hại xấu nhất của pilot ở mức một nửa ngân sách; khoản vượt trần không bị bỏ mà chuyển chị Hạnh duyệt. |
+| `business.cost_budget_per_ticket_vnd` | `1200` | Thấp hơn trần tiền LLM 1.500đ/ticket đã thống nhất với Ops/Finance (`ops_limits.max_llm_cost_per_ticket_vnd`) để chừa biên cho lần gọi lại khi LLM lỗi 429 (bị tính tiền hai lần), và gần gấp đôi ticket đắt nhất ở mốc base (670đ) nên không đẩy ticket thường sang người; ticket dài bất thường (nghi cài lệnh) sẽ bị chuyển người đọc thay vì để máy đọc. |
+| `business.pilot_scope` (all / warehouse / percent) | `{"mode": "warehouse", "warehouses": ["HN", "HCM", "DN", "CT"]}` | Chạy ở 4 kho đơn lẻ, **loại kho sỉ HCM-B2B**: đơn sỉ từ 2 triệu, hễ trễ đủ ngưỡng thưởng thì khoản bồi thường (phí ship + 10% giá trị, tối đa 200.000đ) vượt hạn mức tự động 200.000đ của REFUND-v3 nên gần như luôn chuyển người — mỗi ca tốn 10.000đ công duyệt cộng tiền máy, đắt hơn làm tay 10.000đ (HAZOP B4, dòng "Phạm vi pilot"). Không cắt thêm kho đơn lẻ: ở mốc base cả 4 kho đều rẻ hơn làm tay (HN 1.993đ, CT 590đ, HCM 2.571đ, DN 4.586đ/ticket) và lỗi duy nhất (HCM, `T-002@55`) là lỗi kỹ thuật do cổng R1 xử lý — cắt kho lúc này chỉ giấu bằng chứng (README luật 5). Ticket HCM-B2B tiếp tục làm tay. |
+| `business.roi_min` | `0.5` | Khớp ngưỡng đã ký `business_ops.roi_min = 0.5`: mỗi 1đ bỏ ra phải tiết kiệm ít nhất 0,5đ sau khi trừ tiền hoàn sai, so với làm tay 10.000đ/ticket (`ops_facts.manual_cost_per_ticket_vnd`); base đang 1,34 nên ngưỡng này để bắt khi sự cố hoặc thêm người trực làm ROI tụt, report sẽ ghi "vượt trần". |
 
 ### B7.5 · Câu 2.10 · Cổng con người, vận hành, pháp lý + Runbook phần 1–3
 
@@ -342,7 +342,7 @@ Phần 1–3 và mục Giờ cao điểm viết ở vòng 1. Phần 4–5 viết
 | Người giữ công tắc tắt từng thao tác ghi | Lê Thanh Tùng · `NV-TUNG` (dự phòng: `NV-HANH` nếu không gọi được Tùng trong 5 phút) | Đổi `on`/`off` trong `config/switches.json`; thu hẹp `business.pilot_scope` | `#logix-refund-pilot-alert` |
 | Người nhận khiếu nại của bên thứ ba (hãng, shop, người nhận quà) | Phạm Kiều Oanh · `NV-OANH` | Nhận khiếu nại của hãng và shop; đối soát sổ hằng tuần; đề xuất huỷ lỗi hãng ghi oan và truy hồi khoản hoàn sai; chuyển khiếu nại về dữ liệu cá nhân cho NV-TUNG trong ngày | Email đối soát + `#logix-refund-pilot-alert` |
 
-Số người trực duyệt mỗi ca: 1 (`operations.reviewers_on_shift`) · Mỗi giờ duyệt được: 6 ca (`operations.review_capacity_per_hour` = 1 người × 6 ca) · Phạm vi pilot: theo `business.pilot_scope` (bản hiện tại: `all`, 100%; vai Sản phẩm và kinh doanh chốt trước phút 105, khi đó sửa dòng này cho khớp)
+Số người trực duyệt mỗi ca: 1 (`operations.reviewers_on_shift`) · Mỗi giờ duyệt được: 6 ca (`operations.review_capacity_per_hour` = 1 người × 6 ca) · Phạm vi pilot: theo `business.pilot_scope` = 4 kho đơn lẻ HN, HCM, DN, CT (`mode: "warehouse"`); kho sỉ HCM-B2B làm tay (TV3 chốt, lý do ở B7.4)
 
 #### Runbook 2 · Nhìn con số nào, ngưỡng nào thì làm gì
 
