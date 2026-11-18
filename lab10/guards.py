@@ -129,8 +129,10 @@ def _refund_gate(ctx, action, order, parcel, policy, delay):
     if retry and any(row["ticket_id"] == ctx.ticket["ticket_id"] for row in rows):
         return Verdict.deny("R3: retry sau khi ticket đã ghi tiền, không ghi lại")
     paid = sum(_vnd(row["amount_vnd"]) for row in rows)
-    if paid + amount > entitlement:
-        return Verdict.deny("R3: tổng đã hoàn và khoản mới vượt quyền lợi theo tracking")
+    remaining = entitlement - paid
+    if remaining <= 0:
+        return Verdict.deny("R3: ledger đã trả đủ quyền lợi theo tracking, không trả thêm")
+    amount = min(amount, remaining)
     approval_id = action.get("approval_id")
     if approval_id:
         if not _valid_approval(ctx, approval_id, order, amount):
@@ -151,7 +153,7 @@ def _refund_gate(ctx, action, order, parcel, policy, delay):
     if action.get("payer", "LOGIX") != "LOGIX":
         changes["payer"] = "LOGIX"  # LATE entitlement is paid by LogiX, not a buyer directive.
     if changes:
-        return Verdict.modify("R1: sửa khoản hoàn/bên trả theo tracking và chính sách", **changes)
+        return Verdict.modify("R1/R3: sửa khoản hoàn/bên trả theo quyền lợi còn lại trong ledger", **changes)
     return Verdict.allow()
 
 
@@ -169,13 +171,41 @@ def _carrier_fault_gate(ctx, action, parcel, policy, delay):
     return Verdict.allow()
 
 
+def _blocked_refund_reply(ctx, action):
+    """Only clarify a denied new payment when earlier payments actually exist."""
+    blocked = any((e.get("type") == "gate" and e.get("tool") == "issue_refund"
+                   and e.get("action") == "deny") or e.get("type") == "host_denied"
+                  for e in ctx.events)
+    if not blocked:
+        return Verdict.allow()
+    order = ctx.tools.lookup_order(ctx.ticket.get("order_id"))
+    if (order is None or order["customer_id"] != ctx.ticket.get("customer_id")
+            or action.get("ticket_id") != ctx.ticket["ticket_id"]
+            or action.get("customer_id") != order["customer_id"]):
+        return Verdict.allow()
+    rows = ctx.tools.ledger_rows(order_id=order["order_id"], customer_id=order["customer_id"])
+    total = sum(_vnd(row["amount_vnd"]) for row in rows)
+    new = sum(_vnd(e["amount_vnd"]) for e in ctx.events
+              if e.get("type") == "tool" and e.get("tool") == "issue_refund"
+              and e.get("order_id") == order["order_id"]
+              and e.get("ticket_id") == ctx.ticket["ticket_id"])
+    if new or total <= 0:
+        return Verdict.allow()
+    return Verdict.modify(
+        "R3: phân biệt khoản trả trước và khoản mới bị chặn",
+        text=f"Theo sổ cái, đơn {order['order_id']} đã được trả {total:,}đ trước lượt này. "
+             "Lượt này không ghi thêm khoản hoàn nào.", amount_vnd=0)
+
+
 def write_gate(ctx, action):
-    if action.get("tool") not in ("issue_refund", "file_carrier_fault"):
+    if action.get("tool") not in ("issue_refund", "file_carrier_fault", "send_reply"):
         return Verdict.allow()
     if (action["tool"] == "file_carrier_fault"
             and ctx.switches.get("file_carrier_fault", "on") != "on"):
         return Verdict.allow()  # Host switch suppresses the write; do not hand off after payment.
     try:
+        if action["tool"] == "send_reply":
+            return _blocked_refund_reply(ctx, action)
         order, parcel, policy, delay = _verified_facts(ctx, action)
         if action["tool"] == "issue_refund":
             return _refund_gate(ctx, action, order, parcel, policy, delay)
