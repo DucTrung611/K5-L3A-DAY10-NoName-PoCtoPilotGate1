@@ -24,8 +24,8 @@ rồi mới chạy đánh giá. Khối 1 không sửa code.
 
 ### Câu 1.2 · Mục tiêu nhìn từ hai người
 
-- Chị Oanh, kế toán đối soát (không dùng trợ lý, nhưng phải khớp sổ với hãng và shop mỗi tuần): …
-- Chị Hạnh, trưởng ca CSKH (phải duyệt những ca trợ lý chuyển sang): …
+- Chị Oanh, kế toán đối soát (không dùng trợ lý, nhưng phải khớp sổ với hãng và shop mỗi tuần): mỗi dòng trợ lý ghi vào sổ (khoản hoàn, lỗi hãng) phải **tự đối chiếu được** với tracking và chính sách đang hiệu lực, nên cuối tuần chị không phải truy thu hay huỷ lỗi đã ghi. Cụ thể: khoản hoàn vượt hạn mức có phê duyệt còn hạn của đúng đơn đó, không có khoản ghi trùng cho một ticket, lỗi hãng có nguyên nhân CARRIER ghi trong tracking, và không có khoản nào trừ tiền shop mà không có căn cứ. (PRD v1.1 §2: ghi sổ theo approval còn hạn, trần theo `paid_vnd`; §6: chưa có dữ liệu thật để biết lệch sổ bao nhiêu.)
+- Chị Hạnh, trưởng ca CSKH (phải duyệt những ca trợ lý chuyển sang): mỗi ca trợ lý chuyển sang **đến tay chị trong 60 phút** (`ops_limits.review_sla_minutes`), có sẵn căn cứ (độ trễ theo tracking, chính sách áp dụng, số tiền đề xuất, lý do chuyển). Số ca chuyển phải nằm trong sức một người trực (6 ca/giờ, `ops_facts`). Tên chị (`NV-HANH`) chỉ xuất hiện trên những khoản chị thật sự duyệt, không bị trợ lý dùng lại cho ticket khác. (PRD v1.1 §2: ca ngoài phạm vi luôn chuyển chuyên viên; §6: chưa đo trên người dùng thật nên chưa biết lượng chuyển thực tế.)
 
 ---
 
@@ -48,12 +48,12 @@ trợ lý có đang gây thiệt hại cho bên ngoài LogiX không; không có 
 
 | | Offline, cho MỘT bước (câu 1.3) | Telemetry production (câu 1.4) |
 |---|---|---|
-| **Bước / hành vi được đo** | | |
-| **Thước đo** (một câu, có đơn vị) | | |
-| **Dữ liệu** (lấy ở đâu, bao nhiêu, ai gán nhãn) | | |
-| **Cách tính** (công thức, mẫu số, cách xử lý ca thiếu dữ liệu) | | |
-| **Khung thời gian / ngưỡng báo động** | (không áp dụng) | |
-| **Điểm mù** (thước đo này KHÔNG thấy gì) | | |
+| **Bước / hành vi được đo** | | Các lệnh ghi trợ lý gửi ra **bên thứ ba**: `file_carrier_fault` (ghi lỗi, hãng bị phạt và tài xế bị tính lỗi) và `notify_carrier` (gửi thông báo có dữ liệu cho hãng) |
+| **Thước đo** (một câu, có đơn vị) | | Số **lỗi hãng không khớp tracking** cộng số **thông báo gửi hãng có dữ liệu cá nhân người nhận**, đếm theo từng hãng trong 24 giờ (đơn vị: sự kiện/ngày/hãng) |
+| **Dữ liệu** (lấy ở đâu, bao nhiêu, ai gán nhãn) | | Không có nhãn, dùng nguồn sự thật thay nhãn: bảng lỗi hãng (`faults`) và thư gửi đi (`outbound`, `to = carrier:*`) của trợ lý, đối chiếu với tracking `orders[].parcels` (`delay_cause`, `promised_date`, `delivered_date`) và `orders[].recipient`. Lấy 100% lệnh ghi trong ngày (không lấy mẫu). Tín hiệu trễ: khiếu nại ngược của hãng do NV-OANH ghi khi đối soát tuần |
+| **Cách tính** (công thức, mẫu số, cách xử lý ca thiếu dữ liệu) | | (a) Một lỗi hãng là "không khớp" khi kiện bị ghi có `delay_cause` trống hoặc không thuộc `fault_causes` của chính sách hiệu lực theo ngày, hoặc `delay_days` ghi khác số ngày trễ tính từ tracking, hoặc kiện bị ghi không phải kiện trễ. Tỉ lệ = số lỗi không khớp / tổng lỗi hãng đã ghi trong 24 giờ. (b) Một thông báo là "lộ dữ liệu" khi payload chứa 9 số cuối SĐT, tên hoặc tên đường của người nhận. Đếm tuyệt đối, không chia. Ca thiếu dữ liệu: đơn không tìm thấy trong tracking thì đếm riêng vào "không kiểm được", không cho vào mẫu số; nếu số này > 0 cũng báo vàng |
+| **Khung thời gian / ngưỡng báo động** | (không áp dụng) | Cửa sổ trượt 24 giờ, tính lại mỗi giờ, đăng vào `#logix-refund-pilot-alert`. **ĐỎ**: ≥ 1 lỗi hãng không khớp, hoặc ≥ 1 thông báo lộ dữ liệu → tắt `file_carrier_fault`/`notify_carrier` (theo `operations.stop_conditions`). **VÀNG**: một hãng nhận đủ 2 lỗi tự động trong ngày (`ops_limits.max_auto_strikes_per_carrier_per_day`), hoặc hãng chỉ còn 1 lỗi là bị treo (GHSH, DNB: treo sau 3 lỗi/7 ngày) → lỗi tiếp theo của hãng đó phải chờ NV-HANH duyệt |
+| **Điểm mù** (thước đo này KHÔNG thấy gì) | | Không thấy khi **chính tracking sai** (điểm phát nhập tay `delay_cause` sai, quét sót ngày giao). Không thấy dữ liệu cá nhân viết biến thể (SĐT có dấu cách, tên không dấu) hoặc của người khác ngoài người nhận. Không thấy thiệt hại cho shop (khoản hoàn ghi `payer = MERCHANT`) và cho khách bị hoàn thiếu; hai loại này cần tín hiệu riêng |
 
 **Ví dụ mẫu (bước "chọn độ trễ" của agent, đừng chép):**
 Thước đo: tỉ lệ lần chạy mà độ trễ agent dùng để tính tiền khác độ trễ theo tracking DB. Dữ liệu: sự kiện `proposal.delay_days_used`

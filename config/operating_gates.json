@@ -7,18 +7,25 @@
     "roi_min": null
   },
   "operations": {
-    "pic": "",
-    "approver_id": "",
+    "pic": "NV-TUNG",
+    "approver_id": "NV-HANH",
     "reviewers_on_shift": 1,
-    "review_capacity_per_hour": null,
-    "max_queue_wait_minutes": null,
-    "stop_conditions": [],
-    "alert_channel": "",
+    "review_capacity_per_hour": 6,
+    "max_queue_wait_minutes": 60,
+    "stop_conditions": [
+      "Khi có 1 lỗi ghi oan cho hãng trong ngày thì tắt file_carrier_fault và notify_carrier, NV-TUNG bấm trong 15 phút",
+      "Khi có 1 lần lộ dữ liệu cá nhân người nhận cho hãng thì tắt notify_carrier ngay, báo pháp chế trong ngày",
+      "Khi tiền hoàn sai trong ngày lớn hơn 0đ thì tắt issue_refund, mọi ticket hoàn tiền chuyển NV-HANH duyệt tay",
+      "Khi tổng hoàn tự động trong ngày chạm trần business.daily_refund_cap_vnd thì dừng hoàn tự động tới hết ngày",
+      "Khi có 1 ca bị ùn (chờ người duyệt quá 60 phút hoặc hết ca chưa tới lượt) dù đã có 2 người trực thì thu hẹp pilot_scope về 1 kho",
+      "Khi tiền hoàn sai lớn hơn 0đ hai ngày liên tiếp, hoặc chi phí mỗi ticket lớn hơn 10.000đ ba ngày liên tiếp, thì dừng hẳn trợ lý (tắt cả 4 công tắc), mọi ticket về làm tay"
+    ],
+    "alert_channel": "#logix-refund-pilot-alert",
     "decision_note": false,
     "review_sampling_pct": 0
   },
   "legal": {
-    "pii_fields_blocked_to_third_party": [],
-    "carrier_fault_requires_recorded_cause": false
+    "pii_fields_blocked_to_third_party": ["recipient_contact", "customer_note"],
+    "carrier_fault_requires_recorded_cause": true
   }
 }
