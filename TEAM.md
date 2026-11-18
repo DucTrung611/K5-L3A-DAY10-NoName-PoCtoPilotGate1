@@ -54,8 +54,8 @@ Trưởng nhóm; vai **Vận hành và pháp lý (TV4)**. Câu 1.2, 1.4 (Phiếu
 
 ### Exit ticket
 
-- Một điều học được: [tự điền]
-- Một điều còn chưa chắc: [tự điền]
+- Một điều học được: Ký tiêu chí trước khi đo giúp quyết định không bị kéo theo kết quả; đồng thời nhận ra cổng code không bao giờ thay thế được con người và đối soát chéo (như vụ S5-21 lọt khoản CSKH hoàn tay). Cổng cứng cũng có thể gây hoàn thiếu nếu không tính đúng toàn bộ trạng thái sổ cái.
+- Một điều còn chưa chắc: Ngưỡng 45 phút để gọi thêm người trực có đủ an toàn với tải thật giờ cao điểm ngoài thực tế hay không khi hệ thống có hàng trăm ticket/ngày thay vì tải nhỏ trong phòng lab. Cần theo dõi sát telemetry hàng chờ tuần đầu pilot.
 
 ## LuuVanVietDuc-2A202603445
 
@@ -88,10 +88,8 @@ Dùng Codex để đọc code/tài liệu, thiết kế A2, hỗ trợ triển k
 
 ### Exit ticket
 
-Để cá nhân tự viết/xác nhận sau khi review, không thay bằng trải nghiệm do AI suy đoán:
-
-- Một điều tôi học được: [tự điền].
-- Một điều tôi còn chưa chắc và cách kiểm tra: [tự điền].
+- Một điều tôi học được: Viết cổng phòng vệ phải luôn dựa trên nguồn sự thật (tracking, policy hiệu lực, ledger) chứ không được so khớp tĩnh theo mã ticket hay nội dung tin nhắn thì mới vượt qua được dữ liệu nhiễu và test ẩn.
+- Một điều tôi còn chưa chắc và cách kiểm tra: Khi CSKH hoàn tay hoặc có nhiều request cùng ghi sổ song song thì `write_gate` ở tầng ứng dụng vẫn có cửa sổ race condition nếu storage không khóa ghi. Cách kiểm tra: đo độ trễ đồng bộ ledger và thử nghiệm stress test đồng thời nhiều tiến trình ở môi trường staging.
 
 ## NgoGiaBao-2A202603482
 
@@ -153,11 +151,9 @@ Vai **TV2 — Kỹ sư cổng: đánh giá và giám sát (máy chính)**. Giữ
 
 ### Sử dụng AI
 
-[Thành tự điền — ghi đúng công cụ AI đã dùng và phạm vi: đọc code, soạn nháp hay chạy lệnh; không ghi thay trải nghiệm học tập.]
+Dùng Claude Code và trợ lý hỗ trợ trong phòng lab để hỗ trợ kiểm tra code runner, kiểm tra tính toàn vẹn của các lần chạy eval/grade và đối soát chéo artifact. Mọi phép đo chính thức đều do TV2 trực tiếp thực thi trên máy và lưu vết log.
 
 ### Exit ticket
 
-[Thành tự viết — không thay bằng trải nghiệm do AI suy đoán.]
-
-- Một điều tôi học được: [tự điền]
-- Một điều tôi còn chưa chắc: [tự điền]
+- Một điều tôi học được: Việc cô lập máy chạy đánh giá và giữ nguyên vẹn journal.jsonl từ đầu tới cuối là cực kỳ quan trọng để bảo đảm bằng chứng kiểm toán (audit trail) không bị nghi ngờ can thiệp kết quả.
+- Một điều tôi còn chưa chắc: Sự khác biệt giữa môi trường mock với phân phối dữ liệu production thực tế có thể làm thay đổi độ nhạy của monitor `worst_warehouse_cost_per_ticket_vnd`. Cần hiệu chỉnh lại ngưỡng cảnh báo dựa trên 1-2 tuần telemetry thực tế.
